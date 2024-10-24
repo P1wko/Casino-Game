@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class MainMenuController : MonoBehaviour
 {
-	public Dictionary<string, GameObject> canvasDictionary = new Dictionary<string, GameObject>();
+	public Dictionary<string, GameObject> canvasDictionary = new();
 
-	private GameObject currentCanvas;
-	private GameObject lastCanvas;
+	private Stack<GameObject> menuHistoryStack = new();
 	private Games chosenGame = Games.Texas;
 
 	public GameObject[] canvasList;
+	public CanvasGroup[] gamesList;
 	public CanvasGroup OptionsPanel;
 	public CanvasGroup ChoosePokerPanel;
 
@@ -21,43 +21,50 @@ public class MainMenuController : MonoBehaviour
 			canvas.SetActive(false);
 		}
 
-		ShowCanvas("MainMenuCanvas");
+		menuHistoryStack.Push(canvasDictionary["MainMenuCanvas"]);
+		menuHistoryStack.Peek().SetActive(true);
 	}
 
-	public void ShowCanvas(string canvasName)
+	public void PushOnStackAndShow(GameObject canvas)
 	{
-		if (canvasDictionary.ContainsKey(canvasName))
-		{
-			if (currentCanvas != null)
-			{
-				lastCanvas = currentCanvas;
-				currentCanvas.SetActive(false);
-			}
+		menuHistoryStack.Peek().SetActive(false);
+		menuHistoryStack.Push(canvas);
+		menuHistoryStack.Peek().SetActive(true);
+	}
 
-			currentCanvas = canvasDictionary[canvasName];
-			currentCanvas.SetActive(true);
-		}
-		else
-		{
-			Debug.LogWarning("Canvas at name: " + canvasName + " not found");
-		}
+	public void PopFromStackAndShow()
+	{
+		menuHistoryStack.Peek().SetActive(false);
+		menuHistoryStack.Pop();
+		menuHistoryStack.Peek().SetActive(true);
 	}
 
 	public void SwitchGame(bool prev = false)
 	{
+		foreach (CanvasGroup canvas in gamesList)
+		{
+			canvas.alpha = 0;
+			canvas.blocksRaycasts = false;
+		}
+
 		if (!prev) chosenGame = (Games)(((int)chosenGame + 1) % 3);
-		else chosenGame = (Games)(((int)chosenGame - 1) % 3);
+		else chosenGame = (Games)((((int)chosenGame - 1) + 3)%3);
+
+		Debug.Log(chosenGame);
 
 		switch (chosenGame)
 		{
 			case Games.Texas:
-				ShowCanvas("ChooseTexasCanvas");
+				gamesList[0].alpha = 1;
+				gamesList[0].blocksRaycasts = true;
 				break;
 			case Games.BlackJack:
-				ShowCanvas("ChooseBlackjackCanvas");
+				gamesList[1].alpha = 1;
+				gamesList[1].blocksRaycasts = true;
 				break;
 			case Games.Szwindel:
-				ShowCanvas("ChooseSzwindelCanvas");
+				gamesList[2].alpha = 1;
+				gamesList[2].blocksRaycasts = true;
 				break;
 			default: break;
 		}
@@ -65,17 +72,17 @@ public class MainMenuController : MonoBehaviour
 
 	public void PlayGame()
 	{
-		ShowCanvas("ChooseTexasCanvas");
+		PushOnStackAndShow(canvasDictionary["ChooseGameCanvas"]);
 	}
 
 	public void Option()
 	{
-		ShowCanvas("OptionsCanvas");
+		PushOnStackAndShow(canvasDictionary["OptionsCanvas"]);
 	}
 
 	public void Back()
 	{
-		ShowCanvas(lastCanvas.name);
+		PopFromStackAndShow();
 	}
 
 	public void Exit()
