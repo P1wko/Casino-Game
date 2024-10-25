@@ -1044,7 +1044,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1101238135}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: LoadSingleGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

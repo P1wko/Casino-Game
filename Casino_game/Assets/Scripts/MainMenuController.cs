@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -50,8 +51,6 @@ public class MainMenuController : MonoBehaviour
 		if (!prev) chosenGame = (Games)(((int)chosenGame + 1) % 3);
 		else chosenGame = (Games)((((int)chosenGame - 1) + 3)%3);
 
-		Debug.Log(chosenGame);
-
 		switch (chosenGame)
 		{
 			case Games.Texas:
@@ -67,6 +66,18 @@ public class MainMenuController : MonoBehaviour
 				gamesList[2].blocksRaycasts = true;
 				break;
 			default: break;
+		}
+	}
+
+	public async void LoadSingleGame ()
+	{
+		switch (chosenGame)
+		{
+			case Games.Texas:
+				await SceneManager.LoadSceneAsync("TexasScene");
+				break;
+			default:
+				break;
 		}
 	}
 
