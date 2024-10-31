@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      szwindel_0: -6783448837721983092
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

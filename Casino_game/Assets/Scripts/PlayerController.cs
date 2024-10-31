@@ -5,17 +5,30 @@ public class PlayerController : MonoBehaviour
 {
 	public GameObject CardPrefab;
 	public GameObject CardsOnHand;
+
+	private int PlayerId = 1;
+	private Hand Hand;
 	private void Start()
 	{
-		EventManager.onDealCard += DrawCard;
+		Hand = new();
+		EventManager.onDealCard += CardDealed;
 	}
 
-	private void DrawCard(int playerId, Card card)
+	private void CardDealed(int playerId, Card card)
 	{
-		GameObject newImageObject = Instantiate(CardPrefab);
-		Image newImage = newImageObject.GetComponent<Image>();
+		if(playerId == PlayerId)
+		{
+            GameObject newImageObject = Instantiate(CardPrefab);
+            Image newImage = newImageObject.GetComponent<Image>();
 
-		newImage.sprite = card.cardImage;
-		newImageObject.transform.SetParent(CardsOnHand.transform, false);
+            newImage.sprite = card.cardImage;
+            newImageObject.transform.SetParent(CardsOnHand.transform, false);
+
+			Hand.AddCard(card);
+        }
+		else if(playerId == 0)
+		{
+			Hand.AddCard(card);
+		}
 	}
 }

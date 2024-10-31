@@ -45,5 +45,7 @@ public class TexasGameController : MonoBehaviour
 		newSpriteObject.transform.localPosition = new Vector3(FirstCardPos.x, FirstCardPos.y + (CardSpacing * CardsOnTableCount), 0);
 		newSpriteObject.transform.localScale = CardScale;
 		CardsOnTableCount++;
+
+		EventManager.DealCardInit(0, card);
 	}
 }

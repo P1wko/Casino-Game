@@ -1,26 +1,22 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\",
+  "WorkspaceRootPath": "E:\\Projekt\\Casino-Game\\Casino_game\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|f:\\michal\\projekt\\casino-game\\casino_game\\assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|E:\\Projekt\\Casino-Game\\Casino_game\\assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|f:\\michal\\projekt\\casino-game\\casino_game\\assets\\scripts\\eventmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|e:\\projekt\\casino-game\\casino_game\\assets\\scripts\\hand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|e:\\projekt\\casino-game\\casino_game\\assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|e:\\projekt\\casino-game\\casino_game\\assets\\scripts\\eventmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\eventmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\assets\\scripts\\card.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\card.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,79 +26,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "EventManager.cs",
-              "DocumentMoniker": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\EventManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\EventManager.cs",
-              "ToolTip": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\EventManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\EventManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAsAAAAcAAAAAAAAAA==",
+              "Title": "TexasGameController.cs",
+              "DocumentMoniker": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\TexasGameController.cs",
+              "ToolTip": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\TexasGameController.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAA1wDAAAAAlAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T10:19:27.515Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PlayerController.cs",
-              "DocumentMoniker": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\PlayerController.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerController.cs",
-              "ToolTip": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\PlayerController.cs",
-              "RelativeToolTip": "Assets\\Scripts\\PlayerController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAACAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T10:01:58.941Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Card.cs",
-              "DocumentMoniker": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\Card.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Card.cs",
-              "ToolTip": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\Card.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Card.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T08:57:54.754Z",
+              "WhenOpened": "2024-10-31T17:06:39.316Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "TexasDeck.cs",
-              "DocumentMoniker": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasDeck.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\TexasDeck.cs",
-              "ToolTip": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasDeck.cs",
-              "RelativeToolTip": "Assets\\Scripts\\TexasDeck.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAQwB8AAAAHAAAAAAAAAA==",
+              "Title": "EventManager.cs",
+              "DocumentMoniker": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\EventManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\EventManager.cs",
+              "ToolTip": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\EventManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\EventManager.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T09:59:30.13Z",
+              "WhenOpened": "2024-10-31T17:05:01.458Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Hand.cs",
+              "DocumentMoniker": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\Hand.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Hand.cs",
+              "ToolTip": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\Hand.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Hand.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-31T16:55:07.326Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "TexasGameController.cs",
-              "DocumentMoniker": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\TexasGameController.cs",
-              "ToolTip": "F:\\Michal\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
-              "RelativeToolTip": "Assets\\Scripts\\TexasGameController.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwCwAAABWAAAAAAAAAA==",
+              "Title": "PlayerController.cs",
+              "DocumentMoniker": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\PlayerController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerController.cs",
+              "ToolTip": "E:\\Projekt\\Casino-Game\\Casino_game\\Assets\\Scripts\\PlayerController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayerController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABIAAAAaAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-25T10:41:25.451Z",
+              "WhenOpened": "2024-10-31T16:50:33.868Z",
               "EditorCaption": ""
             }
           ]
