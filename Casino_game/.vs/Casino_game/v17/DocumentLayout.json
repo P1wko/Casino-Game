@@ -3,24 +3,20 @@
   "WorkspaceRootPath": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|g:\\github\\employeee\\casino-game\\casino_game\\assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|G:\\Github\\Employeee\\Casino-Game\\Casino_game\\assets\\scripts\\hand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|G:\\Github\\Employeee\\Casino-Game\\Casino_game\\assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|G:\\Github\\Employeee\\Casino-Game\\Casino_game\\assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|G:\\Github\\Employeee\\Casino-Game\\Casino_game\\assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|g:\\github\\employeee\\casino-game\\casino_game\\assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|g:\\github\\employeee\\casino-game\\casino_game\\assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|g:\\github\\employeee\\casino-game\\casino_game\\assets\\scripts\\hand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -44,40 +40,27 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\TexasDeck.cs",
               "ToolTip": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasDeck.cs",
               "RelativeToolTip": "Assets\\Scripts\\TexasDeck.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T10:23:36.622Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "PlayerController.cs",
-              "DocumentMoniker": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\PlayerController.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayerController.cs",
-              "ToolTip": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\PlayerController.cs",
-              "RelativeToolTip": "Assets\\Scripts\\PlayerController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAATAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-05T10:06:02.17Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Player.cs",
               "DocumentMoniker": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\Player.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player.cs",
               "ToolTip": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\Player.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAlAAAA",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAQwAkAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T10:05:56.011Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "Hand.cs",
               "DocumentMoniker": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\Hand.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Hand.cs",
@@ -90,13 +73,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "TexasGameController.cs",
               "DocumentMoniker": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\TexasGameController.cs",
               "ToolTip": "G:\\Github\\Employeee\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
               "RelativeToolTip": "Assets\\Scripts\\TexasGameController.cs",
-              "ViewState": "AQIAABEAAAAAAAAAAAAQwBgAAAACAAAA",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAowDIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-05T09:51:02.488Z",
               "EditorCaption": ""

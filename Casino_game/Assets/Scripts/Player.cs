@@ -6,8 +6,9 @@ public class Player
     private Hand hand;
     private int playerId;
     private string playerName;
-    private int money;
-    private Boolean isPassed = false;
+    public int money { get; private set; }
+    public int placedBet { get; private set; } = 0;
+    public Boolean isPassed = false;
 
     public Player(int playerId, string playerName, int money)
     {
@@ -20,6 +21,19 @@ public class Player
     public void AddCardToHand(Card card)
     {
         hand.AddCard(card);
+    }
+
+    public Boolean PlaceBet(int betToPlace)
+    {
+        if(money - betToPlace > 0)
+        {
+            placedBet = betToPlace;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
