@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ public class TexasGameController : MonoBehaviour
 
 	private TexasDeck TexasDeck;
 	private int CardsOnTableCount = 0;
+	private List<Player> players = new List<Player>();
 	private void Awake()
 	{
 		//TexasDeck = new TexasDeck();
@@ -21,8 +23,8 @@ public class TexasGameController : MonoBehaviour
 
 	private void Start()
 	{
-		EventManager.DealCardInit(1, new Card(1, Suits.Diamonds));
-		EventManager.DealCardInit(1, new Card(1, Suits.Hearts));
+		players.Add(new Player ( 1, "Krzysiek", 100 ));
+		players.Add(new Player ( 2, "Grzesiek", 200 ));
 
 		DealCardOnTable();
 		DealCardOnTable();
@@ -31,7 +33,12 @@ public class TexasGameController : MonoBehaviour
 		DealCardOnTable();
 	}
 
-	public void DealCardOnTable()
+    private void Update()
+    {
+        
+    }
+
+    public void DealCardOnTable()
 	{
 		//Card card = TexasDeck.DrawRandomCard();
 		Card card = new Card(1, Suits.Diamonds);
@@ -48,4 +55,14 @@ public class TexasGameController : MonoBehaviour
 
 		EventManager.DealCardInit(0, card);
 	}
+
+	public void DealCardsToPlayers()
+	{
+		foreach(Player player in players)
+		{
+            Card card = new Card(1, Suits.Spades);
+			player.AddCardToHand(card);
+		}
+	}
+
 }

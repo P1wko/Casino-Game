@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Hand
 {
-    public List<Card>  PlayerCards;
+    private List<Card> PlayerCards;
     public GameObject TexasGameController;
 
     public Hand() { }

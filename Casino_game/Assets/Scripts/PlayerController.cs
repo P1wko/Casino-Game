@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour 
 {
 	public GameObject CardPrefab;
 	public GameObject CardsOnHand;
@@ -13,22 +13,21 @@ public class PlayerController : MonoBehaviour
 		Hand = new();
 		EventManager.onDealCard += CardDealed;
 	}
-
-	private void CardDealed(int playerId, Card card)
-	{
-		if(playerId == PlayerId)
-		{
+    private void CardDealed(int playerId, Card card)
+    {
+        if (playerId == PlayerId)
+        {
             GameObject newImageObject = Instantiate(CardPrefab);
             Image newImage = newImageObject.GetComponent<Image>();
 
             newImage.sprite = card.cardImage;
             newImageObject.transform.SetParent(CardsOnHand.transform, false);
 
-			Hand.AddCard(card);
+            Hand.AddCard(card);
         }
-		else if(playerId == 0)
-		{
-			Hand.AddCard(card);
-		}
-	}
+        else if (playerId == 0)
+        {
+            Hand.AddCard(card);
+        }
+    }
 }
