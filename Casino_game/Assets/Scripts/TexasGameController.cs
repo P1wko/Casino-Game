@@ -18,6 +18,7 @@ public class TexasGameController : MonoBehaviour
 	private int CardsOnTableCount = 0;
 	private List<Player> players = new List<Player>();
 	private int largestBet = 0;
+	private bool actionPerformed = false;
 	private void Awake()
 	{
 		//TexasDeck = new TexasDeck();
@@ -29,13 +30,13 @@ public class TexasGameController : MonoBehaviour
 		players.Add(new Player ( 1, "Krzysiek", 100 ));
 		players.Add(new Player ( 2, "Grzesiek", 200 ));
 
-		//StartCoroutine(GameStages());
+		StartCoroutine(GameStages());
 
-		/*DealCardOnTable();
-		DealCardOnTable();
-		DealCardOnTable();
-		DealCardOnTable();
-		DealCardOnTable();*/
+		//DealCardOnTable();
+		//DealCardOnTable();
+		//DealCardOnTable();
+		//DealCardOnTable();
+		//DealCardOnTable();
 	}
 
 	private IEnumerator GameStages()
@@ -47,11 +48,35 @@ public class TexasGameController : MonoBehaviour
             DealCardsToPlayers();
         }
 
-		yield return new WaitForSeconds(1);
-
 		PlaceBet(players[0], smallBlind);
 		PlaceBet(players[1], smallBlind * 2);
 
+		yield return StartCoroutine(PlacingBets());
+
+		for(int i = 0; i < 3;i++)
+		{
+			DealCardOnTable();
+		}
+	}
+
+	private IEnumerator PlacingBets()
+	{
+		while (!IfEveryoneCalled())
+		{
+			foreach (Player player in players)
+			{
+				Debug.Log("wchodzi");
+				actionPerformed = false;
+				if(player.placedBet != largestBet && !player.isPassed)
+				{
+					while (!actionPerformed)
+					{
+						yield return null;
+					}
+					actionPerformed = false;
+				}
+			}
+		}
 	}
 
     public void DealCardOnTable()
@@ -76,8 +101,10 @@ public class TexasGameController : MonoBehaviour
 	{
 		foreach(Player player in players)
 		{
-            Card card = new Card(1, Suits.Spades);
+            Card card = new Card(1, Suits.Diamonds);
 			player.AddCardToHand(card);
+
+			EventManager.DealCardInit(player.playerId, card);
 		}
 	}
 
@@ -86,6 +113,7 @@ public class TexasGameController : MonoBehaviour
 		if (player.PlaceBet(bet))
 		{
 			largestBet = bet;
+			actionPerformed = true;
 		}
 		else
 		{
@@ -101,6 +129,7 @@ public class TexasGameController : MonoBehaviour
 	public void Pass(Player player)
 	{
 		player.isPassed = true;
+		actionPerformed = true;
 	}
 
 	public void CheckIfPlayersHaveMoney()
@@ -112,6 +141,15 @@ public class TexasGameController : MonoBehaviour
 				players.Remove(player);
 			}
 		}
+	}
+
+	public bool IfEveryoneCalled()
+	{
+		foreach( Player player in players)
+		{
+			if (player.placedBet != largestBet) return false;
+		}
+		return true;
 	}
 
 }

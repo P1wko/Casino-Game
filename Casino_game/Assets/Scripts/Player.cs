@@ -4,7 +4,7 @@ using UnityEngine;
 public class Player
 {
     private Hand hand;
-    private int playerId;
+    public int playerId { get; private set; }
     private string playerName;
     public int money { get; private set; }
     public int placedBet { get; private set; } = 0;
