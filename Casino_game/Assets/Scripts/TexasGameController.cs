@@ -14,6 +14,7 @@ public class TexasGameController : MonoBehaviour
 	public Vector2 FirstCardPos = Vector2.one;
 	public int smallBlind = 20;
 
+	private int playersCalled = 0;
 	private TexasDeck TexasDeck;
 	private int CardsOnTableCount = 0;
 	private List<Player> players = new List<Player>();
@@ -29,6 +30,8 @@ public class TexasGameController : MonoBehaviour
 	{
 		players.Add(new Player ( 1, "Krzysiek", 100 ));
 		players.Add(new Player ( 2, "Grzesiek", 200 ));
+		players.Add(new Player ( 3, "Marcin", 200 ));
+		players.Add(new Player ( 4, "Mariusz", 200 ));
 
 		StartCoroutine(GameStages());
 
@@ -48,8 +51,8 @@ public class TexasGameController : MonoBehaviour
             DealCardsToPlayers();
         }
 
-		PlaceBet(players[0], smallBlind);
-		PlaceBet(players[1], smallBlind * 2);
+		//PlaceBet(players[0], smallBlind);
+		//PlaceBet(players[1], smallBlind * 2);
 
 		yield return StartCoroutine(PlacingBets());
 
@@ -57,24 +60,50 @@ public class TexasGameController : MonoBehaviour
 		{
 			DealCardOnTable();
 		}
+
+		yield return StartCoroutine(PlacingBets());
+
+		DealCardOnTable();
+
+		yield return StartCoroutine(PlacingBets());
+
+		DealCardOnTable();
+
+		yield return StartCoroutine(PlacingBets());
 	}
 
 	private IEnumerator PlacingBets()
 	{
-		while (!IfEveryoneCalled())
+		foreach (Player player in players)
 		{
-			foreach (Player player in players)
+			Debug.Log("wchodzi");
+			if (player.isPassed) continue;
+			if (player == players[0])
 			{
-				Debug.Log("wchodzi");
+				Debug.Log("czekam...");
 				actionPerformed = false;
-				if(player.placedBet != largestBet && !player.isPassed)
+				while (!actionPerformed)
 				{
-					while (!actionPerformed)
-					{
-						yield return null;
-					}
-					actionPerformed = false;
+					yield return null;
 				}
+
+			}
+			else
+			{
+				int decision = UnityEngine.Random.Range(0, 2); // AI mo¿e spasowaæ lub wyrównaæ zak³ad
+				if (decision == 0) // Call
+				{
+					int callAmount = largestBet - player.placedBet;
+					PlaceBet(player, callAmount, true);
+					Debug.Log($"AI Player {player.playerId} called with {callAmount}");
+				}
+				else // Pass
+				{
+					player.isPassed = true;
+					Debug.Log($"AI Player {player.playerId} passed.");
+				}
+
+				yield return new WaitForSeconds(1); // Ma³e opóŸnienie dla AI
 			}
 		}
 	}
@@ -82,6 +111,7 @@ public class TexasGameController : MonoBehaviour
     public void DealCardOnTable()
 	{
 		//Card card = TexasDeck.DrawRandomCard();
+		playersCalled = 0;
 		Card card = new Card(1, Suits.Diamonds);
 
 		GameObject newSpriteObject = Instantiate(CardPrefab);
@@ -95,6 +125,11 @@ public class TexasGameController : MonoBehaviour
 		CardsOnTableCount++;
 
 		EventManager.DealCardInit(0, card);
+
+		foreach (Player player in players)
+		{
+			player.AddCardToHand(card);
+		}
 	}
 
 	public void DealCardsToPlayers()
@@ -108,8 +143,11 @@ public class TexasGameController : MonoBehaviour
 		}
 	}
 
-	public void PlaceBet(Player player, int bet)
+	public void PlaceBet(Player player, int bet, bool isCalling)
 	{
+		if (isCalling) playersCalled++;
+		else playersCalled = 0;
+
 		if (player.PlaceBet(bet))
 		{
 			largestBet = bet;
@@ -121,15 +159,17 @@ public class TexasGameController : MonoBehaviour
 		}
 	}
 
-	public void Call(Player player)
+	public void Call()
 	{
-		PlaceBet(player, largestBet - player.placedBet);
+		PlaceBet(players[0], largestBet - players[0].placedBet, true);
+		Debug.Log("Przycisk");
 	}
 
-	public void Pass(Player player)
+	public void Pass()
 	{
-		player.isPassed = true;
+		players[0].isPassed = true;
 		actionPerformed = true;
+		Debug.Log("Przycisk");
 	}
 
 	public void CheckIfPlayersHaveMoney()
@@ -150,6 +190,26 @@ public class TexasGameController : MonoBehaviour
 			if (player.placedBet != largestBet) return false;
 		}
 		return true;
+	}
+
+	private void DetermineWinner()
+	{
+		Player bestPlayer = null;
+		int bestHandValue = 0;
+
+		foreach (Player player in players)
+		{
+			if (player.isPassed) continue;
+
+			//int handValue = EvaluateHand(player, CardsOnTable); // Implementuj tê metodê
+			//if (handValue > bestHandValue)
+			//{
+			//	bestHandValue = handValue;
+			//	bestPlayer = player;
+			//}
+		}
+
+		Debug.Log($"Winner is Player {bestPlayer.playerId} with hand value {bestHandValue}!");
 	}
 
 }

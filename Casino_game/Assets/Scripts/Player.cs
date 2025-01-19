@@ -9,6 +9,7 @@ public class Player
     public int money { get; private set; }
     public int placedBet { get; private set; } = 0;
     public Boolean isPassed = false;
+    public Boolean isActionPerformed = false;
 
     public Player(int playerId, string playerName, int money)
     {

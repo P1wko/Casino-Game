@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mainMenu_SZWINDEL_0: -3806260430980512710
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

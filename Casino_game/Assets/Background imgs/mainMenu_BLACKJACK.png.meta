@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mainMenu_BLACKJACK_0: 2764334526902287728
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

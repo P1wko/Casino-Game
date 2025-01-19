@@ -5,29 +5,55 @@ public class PlayerController : MonoBehaviour
 {
 	public GameObject CardPrefab;
 	public GameObject CardsOnHand;
-
-	private int PlayerId = 1;
-	private Hand Hand;
+	public GameObject Comp1Cards;
+	public GameObject Comp2Cards;
+	public GameObject Comp3Cards;
 	private void Start()
 	{
-		Hand = new();
 		EventManager.onDealCard += CardDealed;
 	}
     private void CardDealed(int playerId, Card card)
     {
-        if (playerId == PlayerId)
+        switch (playerId)
         {
-            GameObject newImageObject = Instantiate(CardPrefab);
-            Image newImage = newImageObject.GetComponent<Image>();
+            case 1:
+                {
+                    GameObject newImageObject = Instantiate(CardPrefab);
+                    Image newImage = newImageObject.GetComponent<Image>();
 
-            newImage.sprite = card.cardImage;
-            newImageObject.transform.SetParent(CardsOnHand.transform, false);
+                    newImage.sprite = card.cardImage;
+                    newImageObject.transform.SetParent(CardsOnHand.transform, false);
+                }
+                break;
+            case 2:
+                {
+					GameObject newImageObject = Instantiate(CardPrefab);
+					Image newImage = newImageObject.GetComponent<Image>();
 
-            Hand.AddCard(card);
-        }
-        else if (playerId == 0)
-        {
-            Hand.AddCard(card);
+					newImage.sprite = card.cardImage;
+					newImageObject.transform.SetParent(Comp1Cards.transform, false);
+				}
+                break;
+            case 3:
+                {
+					GameObject newImageObject = Instantiate(CardPrefab);
+					Image newImage = newImageObject.GetComponent<Image>();
+
+					newImage.sprite = card.cardImage;
+					newImageObject.transform.SetParent(Comp2Cards.transform, false);
+				}
+                break;
+            case 4:
+                {
+					GameObject newImageObject = Instantiate(CardPrefab);
+					Image newImage = newImageObject.GetComponent<Image>();
+
+					newImage.sprite = card.cardImage;
+					newImageObject.transform.SetParent(Comp3Cards.transform, false);
+				}
+                break;
+            default:
+                break;
         }
     }
 }
