@@ -7,7 +7,7 @@ public class MainMenuController : MonoBehaviour
 	public Dictionary<string, GameObject> canvasDictionary = new();
 
 	private Stack<GameObject> menuHistoryStack = new();
-	private Games chosenGame = Games.Texas;
+	private Games chosenGame = Games.Szwindel;
 
 	public GameObject[] canvasList;
 	public CanvasGroup[] gamesList;
