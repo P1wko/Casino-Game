@@ -15,15 +15,15 @@ public class TexasGameController : MonoBehaviour
 	public int smallBlind = 20;
 
 	private int playersCalled = 0;
-	private TexasDeck TexasDeck;
+	private TexasDeck texasDeck;
 	private int CardsOnTableCount = 0;
 	private List<Player> players = new List<Player>();
 	private int largestBet = 0;
 	private bool actionPerformed = false;
 	private void Awake()
 	{
-		//TexasDeck = new TexasDeck();
-		//TexasDeck.ShuffleDeck();
+		TexasDeck = new TexasDeck();
+		TexasDeck.ShuffleDeck();
 	}
 
 	private void Start()
@@ -90,7 +90,7 @@ public class TexasGameController : MonoBehaviour
 			}
 			else
 			{
-				int decision = UnityEngine.Random.Range(0, 2); // AI mo¿e spasowaæ lub wyrównaæ zak³ad
+				int decision = UnityEngine.Random.Range(0, 2); // AI moï¿½e spasowaï¿½ lub wyrï¿½wnaï¿½ zakï¿½ad
 				if (decision == 0) // Call
 				{
 					int callAmount = largestBet - player.placedBet;
@@ -103,23 +103,22 @@ public class TexasGameController : MonoBehaviour
 					Debug.Log($"AI Player {player.playerId} passed.");
 				}
 
-				yield return new WaitForSeconds(1); // Ma³e opóŸnienie dla AI
+				yield return new WaitForSeconds(1); // Maï¿½e opï¿½nienie dla AI
 			}
 		}
 	}
 
     public void DealCardOnTable()
 	{
-		//Card card = TexasDeck.DrawRandomCard();
 		playersCalled = 0;
-		Card card = new Card(1, Suits.Diamonds);
+		Card card = texasDeck.DrawRandomCard();
 
 		GameObject newSpriteObject = Instantiate(CardPrefab);
 		SpriteRenderer newSprite = newSpriteObject.GetComponent<SpriteRenderer>();
 
 		newSprite.sprite = card.cardImage;
 		newSpriteObject.transform.SetParent(CardsOnTable.transform, false);
-
+		
 		newSpriteObject.transform.localPosition = new Vector3(FirstCardPos.x, FirstCardPos.y + (CardSpacing * CardsOnTableCount), 0);
 		newSpriteObject.transform.localScale = CardScale;
 		CardsOnTableCount++;
@@ -136,7 +135,7 @@ public class TexasGameController : MonoBehaviour
 	{
 		foreach(Player player in players)
 		{
-            Card card = new Card(1, Suits.Diamonds);
+			Card card = texasDeck.DrawRandomCard();
 			player.AddCardToHand(card);
 
 			EventManager.DealCardInit(player.playerId, card);
@@ -201,15 +200,26 @@ public class TexasGameController : MonoBehaviour
 		{
 			if (player.isPassed) continue;
 
-			//int handValue = EvaluateHand(player, CardsOnTable); // Implementuj tê metodê
-			//if (handValue > bestHandValue)
-			//{
-			//	bestHandValue = handValue;
-			//	bestPlayer = player;
-			//}
+			/*int handValue = EvaluateHand(player); // Implementuj tï¿½ metodï¿½
+			if (handValue > bestHandValue)
+			{
+				bestHandValue = handValue;
+				bestPlayer = player;
+			}*/
 		}
 
 		Debug.Log($"Winner is Player {bestPlayer.playerId} with hand value {bestHandValue}!");
 	}
+
+	/*private EvaluateHand(Player player)
+	{ 
+		List<Card> cardsOnHand = player.GetHand().GetCards();
+
+		foreach (Card cards in cardsOnHand)
+		{
+			
+		}
+		
+	} */
 
 }
