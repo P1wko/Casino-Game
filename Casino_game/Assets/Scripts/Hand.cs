@@ -12,4 +12,9 @@ public class Hand
     {
         PlayerCards.Add(card);
     }
+
+    public List<Card> GetCards()
+    {
+        return PlayerCards;
+    }
 }

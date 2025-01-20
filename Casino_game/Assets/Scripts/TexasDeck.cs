@@ -8,16 +8,16 @@ public class TexasDeck
 {
     public List<Card> deck = new();
 
-	//public TexasDeck()
-	//{
-	//	foreach (Suits suit in Enum.GetValues(typeof(Suits)))
-	//	{
-	//		for (int i = 1; i < 14; i++)
-	//		{
-	//			deck.Add(new Card(i, suit));
-	//		}
-	//	}
-	//}
+	public TexasDeck()
+	{
+		foreach (Suits suit in Enum.GetValues(typeof(Suits)))
+		{
+			for (int i = 1; i < 14; i++)
+			{
+				deck.Add(new Card(i, suit));
+			}
+		}
+	}
 
 	public void ShuffleDeck()
 	{
