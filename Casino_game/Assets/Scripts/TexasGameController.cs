@@ -22,8 +22,8 @@ public class TexasGameController : MonoBehaviour
 	private bool actionPerformed = false;
 	private void Awake()
 	{
-		TexasDeck = new TexasDeck();
-		TexasDeck.ShuffleDeck();
+		texasDeck = new TexasDeck();
+		texasDeck.ShuffleDeck();
 	}
 
 	private void Start()
