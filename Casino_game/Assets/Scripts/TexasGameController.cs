@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,9 @@ public class TexasGameController : MonoBehaviour
 {
     public GameObject CardPrefab;
     public GameObject CardsOnTable;
+    public List<TextMeshProUGUI> playersMoney;
+    public List<TextMeshProUGUI> playerBets;
+    public TextMeshProUGUI House;
 
     public float CardSpacing = 0;
     public Vector2 CardScale = Vector2.one;
@@ -17,6 +21,7 @@ public class TexasGameController : MonoBehaviour
     public int smallBlind = 20;
 
     private int playersCalled = 0;
+    private int houseMoney = 0;
     private TexasDeck texasDeck;
     private int CardsOnTableCount = 0;
     private List<Player> players = new List<Player>();
@@ -38,11 +43,10 @@ public class TexasGameController : MonoBehaviour
 
         StartCoroutine(GameStages());
 
-        //DealCardOnTable();
-        //DealCardOnTable();
-        //DealCardOnTable();
-        //DealCardOnTable();
-        //DealCardOnTable();
+        for(int i = 0; i < players.Count; i++)
+        {
+            playersMoney[i].text = players[i].money.ToString() + "$";
+        }
     }
 
     private IEnumerator GameStages()
@@ -54,8 +58,8 @@ public class TexasGameController : MonoBehaviour
             DealCardsToPlayers();
         }
 
-        //PlaceBet(players[0], smallBlind);
-        //PlaceBet(players[1], smallBlind * 2);
+        PlaceBet(players[2], smallBlind, false);
+        PlaceBet(players[3], smallBlind * 2, false);
 
         yield return StartCoroutine(PlacingBets());
 
@@ -92,7 +96,7 @@ public class TexasGameController : MonoBehaviour
             }
             else
             {
-                int decision = UnityEngine.Random.Range(0, 2); // AI mo�e spasowa� lub wyr�wna� zak�ad
+                int decision = UnityEngine.Random.Range(0, 2);
                 if (decision == 0) // Call
                 {
                     int callAmount = largestBet - player.placedBet;
@@ -105,8 +109,17 @@ public class TexasGameController : MonoBehaviour
                     Debug.Log($"AI Player {player.playerId} passed.");
                 }
 
-                yield return new WaitForSeconds(1); // Ma�e op�nienie dla AI
+                yield return new WaitForSeconds(1);
             }
+        }
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            houseMoney += players[i].placedBet;
+            players[i].placedBet = 0;
+            playerBets[i].text = players[i].placedBet.ToString() + "$";
+
+            House.text = houseMoney.ToString() + "$";
         }
     }
 
@@ -152,7 +165,9 @@ public class TexasGameController : MonoBehaviour
 
         if (player.PlaceBet(bet))
         {
-            largestBet = bet;
+            if(player.placedBet > largestBet) largestBet = player.placedBet;
+            playersMoney[player.playerId - 1].text = player.money.ToString() + "$";
+            playerBets[player.playerId - 1].text = player.placedBet.ToString() + "$";
             actionPerformed = true;
         }
         else

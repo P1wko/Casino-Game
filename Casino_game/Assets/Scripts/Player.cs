@@ -7,7 +7,7 @@ public class Player
     public int playerId { get; private set; }
     private string playerName;
     public int money { get; private set; }
-    public int placedBet { get; private set; } = 0;
+    public int placedBet { get; set; } = 0;
     public Boolean isPassed = false;
     public Boolean isActionPerformed = false;
 
@@ -28,7 +28,8 @@ public class Player
     {
         if(money - betToPlace > 0)
         {
-            placedBet = betToPlace;
+            money -= betToPlace;
+            placedBet += betToPlace;
             return true;
         }
         else
