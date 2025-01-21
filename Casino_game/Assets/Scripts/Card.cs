@@ -10,8 +10,8 @@ public enum Suits
 }
 public class Card
 {
-    public int Value { get; set; }
-    public Suits Suit { get; set; }
+    private int Value { get; set; }
+    private Suits Suit { get; set; }
     public Sprite cardImage {  get; set; }
 
     public Card(int value, Suits suit)
@@ -25,5 +25,15 @@ public class Card
     {
         string imageName = $"{Value}_{Suit}";
         return Resources.Load<Sprite>(imageName);
+    }
+
+    public int GetValue()
+    {
+        return Value;
+    }
+
+    public Suits GetSuit()
+    {
+        return Suit;
     }
 }

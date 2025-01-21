@@ -1,225 +1,365 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TexasGameController : MonoBehaviour
 {
-	public GameObject CardPrefab;
-	public GameObject CardsOnTable;
+    public GameObject CardPrefab;
+    public GameObject CardsOnTable;
 
-	public float CardSpacing = 0;
-	public Vector2 CardScale = Vector2.one;
-	public Vector2 FirstCardPos = Vector2.one;
-	public int smallBlind = 20;
+    public float CardSpacing = 0;
+    public Vector2 CardScale = Vector2.one;
+    public Vector2 FirstCardPos = Vector2.one;
+    public int smallBlind = 20;
 
-	private int playersCalled = 0;
-	private TexasDeck texasDeck;
-	private int CardsOnTableCount = 0;
-	private List<Player> players = new List<Player>();
-	private int largestBet = 0;
-	private bool actionPerformed = false;
-	private void Awake()
-	{
-		texasDeck = new TexasDeck();
-		texasDeck.ShuffleDeck();
-	}
+    private int playersCalled = 0;
+    private TexasDeck texasDeck;
+    private int CardsOnTableCount = 0;
+    private List<Player> players = new List<Player>();
+    private int largestBet = 0;
+    private bool actionPerformed = false;
 
-	private void Start()
-	{
-		players.Add(new Player ( 1, "Krzysiek", 100 ));
-		players.Add(new Player ( 2, "Grzesiek", 200 ));
-		players.Add(new Player ( 3, "Marcin", 200 ));
-		players.Add(new Player ( 4, "Mariusz", 200 ));
+    private void Awake()
+    {
+        texasDeck = new TexasDeck();
+        texasDeck.ShuffleDeck();
+    }
 
-		StartCoroutine(GameStages());
+    private void Start()
+    {
+        players.Add(new Player(1, "Krzysiek", 100));
+        players.Add(new Player(2, "Grzesiek", 200));
+        players.Add(new Player(3, "Marcin", 200));
+        players.Add(new Player(4, "Mariusz", 200));
 
-		//DealCardOnTable();
-		//DealCardOnTable();
-		//DealCardOnTable();
-		//DealCardOnTable();
-		//DealCardOnTable();
-	}
+        StartCoroutine(GameStages());
 
-	private IEnumerator GameStages()
-	{
-		CheckIfPlayersHaveMoney();
+        //DealCardOnTable();
+        //DealCardOnTable();
+        //DealCardOnTable();
+        //DealCardOnTable();
+        //DealCardOnTable();
+    }
 
-		for (int i = 0; i < 2; i++)
-		{
+    private IEnumerator GameStages()
+    {
+        CheckIfPlayersHaveMoney();
+
+        for (int i = 0; i < 2; i++)
+        {
             DealCardsToPlayers();
         }
 
-		//PlaceBet(players[0], smallBlind);
-		//PlaceBet(players[1], smallBlind * 2);
+        //PlaceBet(players[0], smallBlind);
+        //PlaceBet(players[1], smallBlind * 2);
 
-		yield return StartCoroutine(PlacingBets());
+        yield return StartCoroutine(PlacingBets());
 
-		for(int i = 0; i < 3;i++)
-		{
-			DealCardOnTable();
-		}
+        for (int i = 0; i < 3; i++)
+        {
+            DealCardOnTable();
+        }
 
-		yield return StartCoroutine(PlacingBets());
+        yield return StartCoroutine(PlacingBets());
 
-		DealCardOnTable();
+        DealCardOnTable();
 
-		yield return StartCoroutine(PlacingBets());
+        yield return StartCoroutine(PlacingBets());
 
-		DealCardOnTable();
+        DealCardOnTable();
 
-		yield return StartCoroutine(PlacingBets());
-	}
+        yield return StartCoroutine(PlacingBets());
+    }
 
-	private IEnumerator PlacingBets()
-	{
-		foreach (Player player in players)
-		{
-			Debug.Log("wchodzi");
-			if (player.isPassed) continue;
-			if (player == players[0])
-			{
-				Debug.Log("czekam...");
-				actionPerformed = false;
-				while (!actionPerformed)
-				{
-					yield return null;
-				}
+    private IEnumerator PlacingBets()
+    {
+        foreach (Player player in players)
+        {
+            Debug.Log("wchodzi");
+            if (player.isPassed) continue;
+            if (player == players[0])
+            {
+                Debug.Log("czekam...");
+                actionPerformed = false;
+                while (!actionPerformed)
+                {
+                    yield return null;
+                }
+            }
+            else
+            {
+                int decision = UnityEngine.Random.Range(0, 2); // AI mo�e spasowa� lub wyr�wna� zak�ad
+                if (decision == 0) // Call
+                {
+                    int callAmount = largestBet - player.placedBet;
+                    PlaceBet(player, callAmount, true);
+                    Debug.Log($"AI Player {player.playerId} called with {callAmount}");
+                }
+                else // Pass
+                {
+                    player.isPassed = true;
+                    Debug.Log($"AI Player {player.playerId} passed.");
+                }
 
-			}
-			else
-			{
-				int decision = UnityEngine.Random.Range(0, 2); // AI mo�e spasowa� lub wyr�wna� zak�ad
-				if (decision == 0) // Call
-				{
-					int callAmount = largestBet - player.placedBet;
-					PlaceBet(player, callAmount, true);
-					Debug.Log($"AI Player {player.playerId} called with {callAmount}");
-				}
-				else // Pass
-				{
-					player.isPassed = true;
-					Debug.Log($"AI Player {player.playerId} passed.");
-				}
-
-				yield return new WaitForSeconds(1); // Ma�e op�nienie dla AI
-			}
-		}
-	}
+                yield return new WaitForSeconds(1); // Ma�e op�nienie dla AI
+            }
+        }
+    }
 
     public void DealCardOnTable()
-	{
-		playersCalled = 0;
-		Card card = texasDeck.DrawRandomCard();
+    {
+        playersCalled = 0;
+        Card card = texasDeck.DrawRandomCard();
 
-		GameObject newSpriteObject = Instantiate(CardPrefab);
-		SpriteRenderer newSprite = newSpriteObject.GetComponent<SpriteRenderer>();
+        GameObject newSpriteObject = Instantiate(CardPrefab);
+        SpriteRenderer newSprite = newSpriteObject.GetComponent<SpriteRenderer>();
 
-		newSprite.sprite = card.cardImage;
-		newSpriteObject.transform.SetParent(CardsOnTable.transform, false);
-		
-		newSpriteObject.transform.localPosition = new Vector3(FirstCardPos.x, FirstCardPos.y + (CardSpacing * CardsOnTableCount), 0);
-		newSpriteObject.transform.localScale = CardScale;
-		CardsOnTableCount++;
+        newSprite.sprite = card.cardImage;
+        newSpriteObject.transform.SetParent(CardsOnTable.transform, false);
 
-		EventManager.DealCardInit(0, card);
+        newSpriteObject.transform.localPosition =
+            new Vector3(FirstCardPos.x, FirstCardPos.y + (CardSpacing * CardsOnTableCount), 0);
+        newSpriteObject.transform.localScale = CardScale;
+        CardsOnTableCount++;
 
-		foreach (Player player in players)
-		{
-			player.AddCardToHand(card);
-		}
-	}
+        EventManager.DealCardInit(0, card);
 
-	public void DealCardsToPlayers()
-	{
-		foreach(Player player in players)
-		{
-			Card card = texasDeck.DrawRandomCard();
-			player.AddCardToHand(card);
+        foreach (Player player in players)
+        {
+            player.AddCardToHand(card);
+        }
+    }
 
-			EventManager.DealCardInit(player.playerId, card);
-		}
-	}
+    public void DealCardsToPlayers()
+    {
+        foreach (Player player in players)
+        {
+            Card card = texasDeck.DrawRandomCard();
+            player.AddCardToHand(card);
 
-	public void PlaceBet(Player player, int bet, bool isCalling)
-	{
-		if (isCalling) playersCalled++;
-		else playersCalled = 0;
+            EventManager.DealCardInit(player.playerId, card);
+        }
+    }
 
-		if (player.PlaceBet(bet))
-		{
-			largestBet = bet;
-			actionPerformed = true;
-		}
-		else
-		{
-			Debug.Log("Not enough money");
-		}
-	}
+    public void PlaceBet(Player player, int bet, bool isCalling)
+    {
+        if (isCalling) playersCalled++;
+        else playersCalled = 0;
 
-	public void Call()
-	{
-		PlaceBet(players[0], largestBet - players[0].placedBet, true);
-		Debug.Log("Przycisk");
-	}
+        if (player.PlaceBet(bet))
+        {
+            largestBet = bet;
+            actionPerformed = true;
+        }
+        else
+        {
+            Debug.Log("Not enough money");
+        }
+    }
 
-	public void Pass()
-	{
-		players[0].isPassed = true;
-		actionPerformed = true;
-		Debug.Log("Przycisk");
-	}
+    public void Call()
+    {
+        PlaceBet(players[0], largestBet - players[0].placedBet, true);
+        Debug.Log("Przycisk");
+    }
 
-	public void CheckIfPlayersHaveMoney()
-	{
-		foreach (Player player in players)
-		{
-			if(player.money < (smallBlind * 2))
-			{
-				players.Remove(player);
-			}
-		}
-	}
+    public void Pass()
+    {
+        players[0].isPassed = true;
+        actionPerformed = true;
+        Debug.Log("Przycisk");
+    }
 
-	public bool IfEveryoneCalled()
-	{
-		foreach( Player player in players)
-		{
-			if (player.placedBet != largestBet) return false;
-		}
-		return true;
-	}
+    public void CheckIfPlayersHaveMoney()
+    {
+        foreach (Player player in players)
+        {
+            if (player.money < (smallBlind * 2))
+            {
+                players.Remove(player);
+            }
+        }
+    }
 
-	private void DetermineWinner()
-	{
-		Player bestPlayer = null;
-		int bestHandValue = 0;
+    public bool IfEveryoneCalled()
+    {
+        foreach (Player player in players)
+        {
+            if (player.placedBet != largestBet) return false;
+        }
 
-		foreach (Player player in players)
-		{
-			if (player.isPassed) continue;
+        return true;
+    }
 
-			/*int handValue = EvaluateHand(player); // Implementuj t� metod�
-			if (handValue > bestHandValue)
-			{
-				bestHandValue = handValue;
-				bestPlayer = player;
-			}*/
-		}
+    private void DetermineWinner()
+    {
+        Player bestPlayer = null;
+        int bestHandValue = 0;
 
-		Debug.Log($"Winner is Player {bestPlayer.playerId} with hand value {bestHandValue}!");
-	}
+        foreach (Player player in players)
+        {
+            if (player.isPassed) continue;
 
-	/*private EvaluateHand(Player player)
-	{ 
-		List<Card> cardsOnHand = player.GetHand().GetCards();
+            int handValue = EvaluateHand(player); // Implementuj t� metod�
+            if (handValue > bestHandValue)
+            {
+                bestHandValue = handValue;
+                bestPlayer = player;
+            }
+        }
 
-		foreach (Card cards in cardsOnHand)
-		{
-			
-		}
-		
-	} */
+        Debug.Log($"Winner is Player {bestPlayer.playerId} with hand value {bestHandValue}!");
+    }
 
+    private int EvaluateHand(Player player)
+    {
+        List<Card> cardsOnHand = player.GetHand().GetCards();
+        Dictionary<int, int> cardValues = new Dictionary<int, int>();
+        Dictionary<Suits, int> suitValues = new Dictionary<Suits, int>();
+
+        foreach (Card card in cardsOnHand)
+        {
+            if (!cardValues.Keys.Contains(card.GetValue()))
+            {
+                if (card.GetValue() == 1)
+                {
+                    cardValues.Add(1, 1);
+                    cardValues.Add(14, 1);
+                }
+                else
+                {
+                    cardValues.Add(card.GetValue(), 1);    
+                }
+                
+            }
+            else
+            {
+                cardValues[card.GetValue()]++;
+            }
+
+            if (!suitValues.Keys.Contains(card.GetSuit()))
+            {
+                suitValues.Add(card.GetSuit(), 1);
+            }
+            else
+            {
+                suitValues[card.GetSuit()]++;
+            }
+            
+        }
+
+        if (RoyalFlush(cardValues, cardsOnHand)) return 9;
+        if (StraightFlush(cardValues, cardsOnHand)) return 8;
+        if (FourOfAKind(cardValues)) return 7;
+        if (FullHouse(cardValues)) return 6;
+        if (Flush(suitValues)) return 5;
+        if (Straight(cardValues)) return 4;
+        if (ThreeOfAKind(cardValues)) return 3;
+        if (TwoPair(cardValues)) return 2;
+        if (Pair(cardValues)) return 1;
+        // High card
+        return 0;
+    }
+
+    private bool FourOfAKind(Dictionary<int,int> cardValues)
+    {
+        return cardValues.Values.Contains(4);
+    }
+    
+    private bool ThreeOfAKind(Dictionary<int,int> cardValues)
+    {
+        return cardValues.Values.Contains(3);
+    }
+    
+    private bool Pair(Dictionary<int,int> cardValues)
+    {
+        return cardValues.Values.Contains(2);
+    }
+    
+    private bool TwoPair(Dictionary<int,int> cardValues)
+    {
+        return cardValues.Values.Count(value => value == 2) == 2;
+    }
+    
+    private bool FullHouse(Dictionary<int,int> cardValues)
+    {
+        return cardValues.Values.Contains(3) && cardValues.Values.Contains(2);
+    }
+    
+    private bool Flush(Dictionary<Suits,int> suitValues)
+    {
+        return suitValues.Values.Contains(5);
+    }
+
+    private bool Straight(Dictionary<int, int> cardValues)
+    {
+        var sortedKeys = cardValues.Keys.OrderBy(key => key).ToList();
+        int l = 0;
+        int r = 1;
+        int counter = 1;
+
+        for (int i = 1; i < sortedKeys.Count; i++)
+        {
+            if (sortedKeys[i] - sortedKeys[i - 1] == 1)
+            {
+                counter++;
+                if (counter == 5) return true; // Strit znaleziony
+            }
+            else if (sortedKeys[i] != sortedKeys[i - 1]) // Jeśli różnice > 1, resetuj licznik
+            {
+                counter = 1;
+            }
+        }
+
+        return false; // Brak strita
+    }
+    
+    private bool StraightFlush(Dictionary<int, int> cardValues, List<Card> cardsOnHand)
+    {
+        var sortedKeys = cardValues.Keys.OrderBy(key => key).ToList();
+        int l = 0;
+        int r = 1;
+        int counter = 1;
+
+        for (int i = 1; i < sortedKeys.Count; i++)
+        {
+            if (sortedKeys[i] - sortedKeys[i - 1] == 1 && cardsOnHand[sortedKeys[l]].GetSuit() == cardsOnHand[sortedKeys[r]].GetSuit())
+            {
+                counter++;
+                if (counter == 5) return true; // Strit znaleziony
+            }
+            else if (sortedKeys[i] != sortedKeys[i - 1]) // Jeśli różnice > 1, resetuj licznik
+            {
+                counter = 1;
+            }
+        }
+        return false;
+    }
+    
+    private bool RoyalFlush(Dictionary<int, int> cardValues, List<Card> cardsOnHand)
+    {
+        var sortedKeys = cardValues.Keys.OrderBy(key => key).ToList();
+        int l = 10;
+        int r = 11;
+        int counter = 1;
+
+        for (int i = 0; i < sortedKeys.Count; i++)
+        {
+            if (sortedKeys[r] - sortedKeys[l] == 1 && cardsOnHand[sortedKeys[l]].GetSuit() == cardsOnHand[sortedKeys[r]].GetSuit())
+            {
+                counter++;
+                if (counter == 5) return true; // Strit znaleziony
+            }
+            else if (sortedKeys[i] != sortedKeys[i - 1]) // Jeśli różnice > 1, resetuj licznik
+            {
+                counter = 1;
+            }
+        }
+        return false;
+    }
+    
 }
