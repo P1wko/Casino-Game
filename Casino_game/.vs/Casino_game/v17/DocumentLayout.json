@@ -3,11 +3,15 @@
   "WorkspaceRootPath": "D:\\Szwindel\\Casino-Game\\Casino_game\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|d:\\szwindel\\casino-game\\casino_game\\assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|D:\\Szwindel\\Casino-Game\\Casino_game\\assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasgamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|d:\\szwindel\\casino-game\\casino_game\\assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|d:\\szwindel\\casino-game\\casino_game\\assets\\textmesh pro\\shaders\\tmp_sdf-mobile.shader||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\textmesh pro\\shaders\\tmp_sdf-mobile.shader||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|D:\\Szwindel\\Casino-Game\\Casino_game\\assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{89067AD9-DCD7-A531-114E-635E9DE05333}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\texasdeck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -26,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -35,6 +39,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "TMP_SDF-Mobile.shader",
+              "DocumentMoniker": "D:\\Szwindel\\Casino-Game\\Casino_game\\Assets\\TextMesh Pro\\Shaders\\TMP_SDF-Mobile.shader",
+              "RelativeDocumentMoniker": "Assets\\TextMesh Pro\\Shaders\\TMP_SDF-Mobile.shader",
+              "ToolTip": "D:\\Szwindel\\Casino-Game\\Casino_game\\Assets\\TextMesh Pro\\Shaders\\TMP_SDF-Mobile.shader",
+              "RelativeToolTip": "Assets\\TextMesh Pro\\Shaders\\TMP_SDF-Mobile.shader",
+              "ViewState": "AQIAAAkAAAAAAAAAAIBJwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002777|",
+              "WhenOpened": "2025-01-22T14:05:19.067Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "TexasDeck.cs",
               "DocumentMoniker": "D:\\Szwindel\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasDeck.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\TexasDeck.cs",
@@ -42,12 +59,11 @@
               "RelativeToolTip": "Assets\\Scripts\\TexasDeck.cs",
               "ViewState": "AQIAAA0AAAAAAAAAAAAgwCUAAAACAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-21T11:40:28.328Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-21T11:40:28.328Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Player.cs",
               "DocumentMoniker": "D:\\Szwindel\\Casino-Game\\Casino_game\\Assets\\Scripts\\Player.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player.cs",
@@ -65,14 +81,14 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\TexasGameController.cs",
               "ToolTip": "D:\\Szwindel\\Casino-Game\\Casino_game\\Assets\\Scripts\\TexasGameController.cs",
               "RelativeToolTip": "Assets\\Scripts\\TexasGameController.cs",
-              "ViewState": "AQIAADIBAAAAAAAAAAAEwDwBAAAMAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-20T23:01:13.933Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "MainMenuController.cs",
               "DocumentMoniker": "D:\\Szwindel\\Casino-Game\\Casino_game\\Assets\\Scripts\\MainMenuController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\MainMenuController.cs",

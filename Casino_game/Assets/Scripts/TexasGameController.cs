@@ -12,7 +12,7 @@ public class TexasGameController : MonoBehaviour
     public GameObject CardPrefab;
     public GameObject CardsOnTable;
     public List<TextMeshProUGUI> playersMoney;
-    public List<TextMeshProUGUI> playerBets;
+    public List<TextMeshPro> playerBets;
     public TextMeshProUGUI House;
 
     public float CardSpacing = 0;
