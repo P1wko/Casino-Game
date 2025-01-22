@@ -219,10 +219,10 @@ public class TexasGameController : MonoBehaviour
         {
             if (player.isPassed) continue;
 
-            int handValue = EvaluateHand(player); // Implementuj t� metod�
-            if (handValue > bestHandValue)
+            player.pointsOnHand = EvaluateHand(player); // Implementuj t� metod�
+            if (player.pointsOnHand > bestHandValue)
             {
-                bestHandValue = handValue;
+                bestHandValue = player.pointsOnHand;
                 bestPlayer = player;
             }
         }
@@ -264,117 +264,154 @@ public class TexasGameController : MonoBehaviour
             {
                 suitValues[card.GetSuit()]++;
             }
-            
         }
+        
+        cardValues = cardValues.OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
-        if (RoyalFlush(cardValues, cardsOnHand)) return 9;
-        if (StraightFlush(cardValues, cardsOnHand)) return 8;
-        if (FourOfAKind(cardValues)) return 7;
-        if (FullHouse(cardValues)) return 6;
-        if (Flush(suitValues)) return 5;
-        if (Straight(cardValues)) return 4;
-        if (ThreeOfAKind(cardValues)) return 3;
-        if (TwoPair(cardValues)) return 2;
-        if (Pair(cardValues)) return 1;
-        // High card
+        int points = 0;
+        if ((points = RoyalFlush(cardsOnHand)) > 0) {return points;}
+        if ((points = StraightFlush(cardsOnHand)) > 0) return points;
+        if ((points = FourOfAKind(cardValues)) > 0) return points;
+        if ((points = FullHouse(cardValues)) > 0) return points;
+        if ((points = Flush(suitValues)) > 0) return points;
+        if ((points = Straight(cardValues)) > 0) return points;
+        if ((points = ThreeOfAKind(cardValues)) > 0) return points;
+        if ((points = TwoPair(cardValues)) > 0) return points;
+        if ((points = Pair(cardValues)) > 0) return points;
+    
+        points = cardValues.Values.Max();
+        return points; // High card or no combination
+    }
+
+    private int FourOfAKind(Dictionary<int,int> cardValues)
+    {
+        if (cardValues.Keys.Contains(4))
+        {
+            var points = cardValues.FirstOrDefault(x => x.Value == 4);
+            return points.Key * points.Value + 700;
+        }
+        return 0;
+    }
+    
+    private int ThreeOfAKind(Dictionary<int,int> cardValues)
+    {
+        if (cardValues.Keys.Contains(3))
+        {
+            var points = cardValues.FirstOrDefault(x => x.Value == 3);
+            return points.Key * points.Value + 300;
+        }
+        return 0 ;    }
+    
+    private int Pair(Dictionary<int,int> cardValues)
+    {
+        if (cardValues.Keys.Contains(2))
+        {
+            var points = cardValues.FirstOrDefault(x => x.Value == 2);
+            return points.Key * points.Value + 100;
+        }
+        return 0;    }
+    
+    private int TwoPair(Dictionary<int,int> cardValues)
+    {
+        if (cardValues.Values.Count(value => value == 2) == 2)
+        {
+            var points = cardValues.Where(x => x.Value == 2).OrderByDescending(x => x.Key).Take(2).ToList();
+            return points.Sum(x => x.Key * 2) + 200;
+        }
+        return 0;
+    }
+    
+    private int FullHouse(Dictionary<int,int> cardValues)
+    {
+        if (cardValues.Values.Contains(3) && cardValues.Values.Contains(2))
+        {
+            var points = cardValues.FirstOrDefault(x => x.Value == 3);
+            var pts = points.Key * points.Value;
+            
+            points = cardValues.FirstOrDefault(x => x.Value == 2);
+            pts += points.Key * points.Value + 600;
+            
+            return pts;
+        }
+        return 0;
+    }
+    
+    private int Flush(Dictionary<Suits,int> suitValues)
+    {
+        return suitValues.Values.Contains(5) ? 500 : 0;
+    }
+
+    private int Straight(Dictionary<int, int> cardValues)
+    {
+        var sortedValues = cardValues.Keys.Distinct().OrderByDescending(key => key).ToList();
+        var points = sortedValues[0];
+        int counter = 1;
+
+        for (int i = 1; i < sortedValues.Count; i++)
+        {
+            if (sortedValues[i - 1] - sortedValues[i] == 1)
+            {
+                points += sortedValues[i];
+                counter++;
+                if (counter == 5)
+                {
+                    points += 400;
+                    return points;
+                }
+            }
+            else
+            {
+                points = sortedValues[i];
+                counter = 1; // Reset liczby, jeśli nie są kolejne
+            }
+        }
+        
         return 0;
     }
 
-    private bool FourOfAKind(Dictionary<int,int> cardValues)
+    private int StraightFlush(List<Card> cardsOnHand)
     {
-        return cardValues.Values.Contains(4);
-    }
-    
-    private bool ThreeOfAKind(Dictionary<int,int> cardValues)
-    {
-        return cardValues.Values.Contains(3);
-    }
-    
-    private bool Pair(Dictionary<int,int> cardValues)
-    {
-        return cardValues.Values.Contains(2);
-    }
-    
-    private bool TwoPair(Dictionary<int,int> cardValues)
-    {
-        return cardValues.Values.Count(value => value == 2) == 2;
-    }
-    
-    private bool FullHouse(Dictionary<int,int> cardValues)
-    {
-        return cardValues.Values.Contains(3) && cardValues.Values.Contains(2);
-    }
-    
-    private bool Flush(Dictionary<Suits,int> suitValues)
-    {
-        return suitValues.Values.Contains(5);
-    }
-
-    private bool Straight(Dictionary<int, int> cardValues)
-    {
-        var sortedKeys = cardValues.Keys.OrderBy(key => key).ToList();
-        int l = 0;
-        int r = 1;
-        int counter = 1;
-
-        for (int i = 1; i < sortedKeys.Count; i++)
+        var groupedBySuit = cardsOnHand.GroupBy(card => card.GetSuit());
+        foreach (var suitGroup in groupedBySuit)
         {
-            if (sortedKeys[i] - sortedKeys[i - 1] == 1)
+            var sortedValues = suitGroup.Select(card => card.GetValue()).Distinct().OrderByDescending(v => v).ToList();
+            var points = sortedValues[0];
+            int counter = 1;
+
+            for (int i = 1; i < sortedValues.Count; i++)
             {
-                counter++;
-                if (counter == 5) return true; // Strit znaleziony
-            }
-            else if (sortedKeys[i] != sortedKeys[i - 1]) // Jeśli różnice > 1, resetuj licznik
-            {
-                counter = 1;
+                if (sortedValues[i - 1] - sortedValues[i] == 1)
+                {
+                    points += sortedValues[i];
+                    counter++;
+                    if (counter == 5)
+                    {
+                        points += 800;
+                        return points;
+                    }
+                }
+                else
+                {
+                    points = sortedValues[i];
+                    counter = 1; // Reset liczby, jeśli nie są kolejne
+                }
             }
         }
-
-        return false; // Brak strita
+        return 0;
     }
-    
-    private bool StraightFlush(Dictionary<int, int> cardValues, List<Card> cardsOnHand)
-    {
-        var sortedKeys = cardValues.Keys.OrderBy(key => key).ToList();
-        int l = 0;
-        int r = 1;
-        int counter = 1;
 
-        for (int i = 1; i < sortedKeys.Count; i++)
+    private int RoyalFlush(List<Card> cardsOnHand)
+    {
+        var groupedBySuit = cardsOnHand.GroupBy(card => card.GetSuit());
+        foreach (var suitGroup in groupedBySuit)
         {
-            if (sortedKeys[i] - sortedKeys[i - 1] == 1 && cardsOnHand[sortedKeys[l]].GetSuit() == cardsOnHand[sortedKeys[r]].GetSuit())
+            var sortedValues = suitGroup.Select(card => card.GetValue()).OrderBy(v => v).ToList();
+            if (new HashSet<int> { 10, 11, 12, 13, 14 }.IsSubsetOf(sortedValues))
             {
-                counter++;
-                if (counter == 5) return true; // Strit znaleziony
-            }
-            else if (sortedKeys[i] != sortedKeys[i - 1]) // Jeśli różnice > 1, resetuj licznik
-            {
-                counter = 1;
+                return 960;
             }
         }
-        return false;
-    }
-    
-    private bool RoyalFlush(Dictionary<int, int> cardValues, List<Card> cardsOnHand)
-    {
-        var sortedKeys = cardValues.Keys.OrderBy(key => key).ToList();
-        int l = 10;
-        int r = 11;
-        int counter = 1;
-
-        for (int i = 0; i < sortedKeys.Count; i++)
-        {
-            if (sortedKeys[r] - sortedKeys[l] == 1 && cardsOnHand[sortedKeys[l]].GetSuit() == cardsOnHand[sortedKeys[r]].GetSuit())
-            {
-                counter++;
-                if (counter == 5) return true; // Strit znaleziony
-            }
-            else if (sortedKeys[i] != sortedKeys[i - 1]) // Jeśli różnice > 1, resetuj licznik
-            {
-                counter = 1;
-            }
-        }
-        return false;
+        return 0;
     }
     
 }
