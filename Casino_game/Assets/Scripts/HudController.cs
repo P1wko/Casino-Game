@@ -10,7 +10,7 @@ public class HudController : MonoBehaviour
 	{
 		EventManager.onDealCard += CardDealed;
 	}
-	private void CardDealed(int playerId, Card card)
+	private void CardDealed(int playerId, Card card, float rotation)
 	{
 		if(playerId == 1)
 		{

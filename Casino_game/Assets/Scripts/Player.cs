@@ -27,7 +27,7 @@ public class Player
 
     public Boolean PlaceBet(int betToPlace)
     {
-        if(money - betToPlace > 0)
+        if(money - betToPlace >= 0)
         {
             money -= betToPlace;
             placedBet += betToPlace;

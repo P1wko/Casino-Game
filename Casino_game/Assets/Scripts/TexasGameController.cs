@@ -14,12 +14,16 @@ public class TexasGameController : MonoBehaviour
     public List<TextMeshProUGUI> playersMoney;
     public List<TextMeshPro> playerBets;
     public TextMeshPro House;
+    public TextMeshPro WinnerText;
+    public TextMeshProUGUI BetValue;
+    public SpriteRenderer WinnerTextBackground;
 
     public float CardSpacing = 0;
     public Vector2 CardScale = Vector2.one;
     public Vector2 FirstCardPos = Vector2.one;
     public int smallBlind = 20;
 
+    private int betValue = 0;
     private int playersCalled = 0;
     private int houseMoney = 0;
     private TexasDeck texasDeck;
@@ -39,11 +43,11 @@ public class TexasGameController : MonoBehaviour
         players.Add(new Player(1, "Krzysiek", 100));
         players.Add(new Player(2, "Grzesiek", 200));
         players.Add(new Player(3, "Marcin", 200));
-        players.Add(new Player(4, "Mariusz", 200));
+        players.Add(new Player(4, "Mieszko I", 200));
 
         StartCoroutine(GameStages());
 
-        for(int i = 0; i < players.Count; i++)
+        for (int i = 0; i < players.Count; i++)
         {
             playersMoney[i].text = players[i].money.ToString() + "$";
         }
@@ -53,15 +57,18 @@ public class TexasGameController : MonoBehaviour
     {
         CheckIfPlayersHaveMoney();
 
-        for (int i = 0; i < 2; i++)
-        {
-            DealCardsToPlayers();
-        }
+            DealCardsToPlayers(12.0f);
+            DealCardsToPlayers(0.0f);
 
         PlaceBet(players[2], smallBlind, false);
         PlaceBet(players[3], smallBlind * 2, false);
+        betValue = largestBet + 10;
+        BetValue.text = betValue.ToString() + "$";
 
         yield return StartCoroutine(PlacingBets());
+        largestBet = 0;
+        betValue = largestBet + 10;
+        BetValue.text = betValue.ToString() + "$";
 
         for (int i = 0; i < 3; i++)
         {
@@ -69,17 +76,26 @@ public class TexasGameController : MonoBehaviour
         }
 
         yield return StartCoroutine(PlacingBets());
+        largestBet = 0;
+        betValue = largestBet + 10;
+        BetValue.text = betValue.ToString() + "$";
 
         DealCardOnTable();
 
         yield return StartCoroutine(PlacingBets());
+        largestBet = 0;
+        betValue = largestBet + 10;
+        BetValue.text = betValue.ToString() + "$";
 
         DealCardOnTable();
 
         yield return StartCoroutine(PlacingBets());
-        
+        largestBet = 0;
+        betValue = largestBet + 10;
+        BetValue.text = betValue.ToString() + "$";
+
         DetermineWinner();
-        
+
     }
 
     private IEnumerator PlacingBets()
@@ -99,20 +115,21 @@ public class TexasGameController : MonoBehaviour
             }
             else
             {
-                int decision = UnityEngine.Random.Range(0, 2);
-                if (decision == 0) // Call
+                int decision = UnityEngine.Random.Range(0, 10);
+                if (decision > 1) // Call
                 {
                     int callAmount = largestBet - player.placedBet;
                     PlaceBet(player, callAmount, true);
-                    Debug.Log($"AI Player {player.playerId} called with {callAmount}");
+                    Debug.Log($"AI Player {player.playerId - 1} called with {callAmount}");
                 }
                 else // Pass
                 {
                     player.isPassed = true;
-                    Debug.Log($"AI Player {player.playerId} passed.");
+                    Debug.Log($"AI Player {player.playerId - 1} passed.");
+                    playerBets[player.playerId - 1].text = "PASS!";
                 }
 
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(2);
             }
         }
 
@@ -120,7 +137,10 @@ public class TexasGameController : MonoBehaviour
         {
             houseMoney += players[i].placedBet;
             players[i].placedBet = 0;
-            playerBets[i].text = players[i].placedBet.ToString() + "$";
+            if (!players[i].isPassed)
+            {
+                playerBets[i].text = players[i].placedBet.ToString() + "$";
+            }
 
             House.text = houseMoney.ToString() + "$";
         }
@@ -142,7 +162,7 @@ public class TexasGameController : MonoBehaviour
         newSpriteObject.transform.localScale = CardScale;
         CardsOnTableCount++;
 
-        EventManager.DealCardInit(0, card);
+        EventManager.DealCardInit(0, card, 0.0f);
 
         foreach (Player player in players)
         {
@@ -150,14 +170,14 @@ public class TexasGameController : MonoBehaviour
         }
     }
 
-    public void DealCardsToPlayers()
+    public void DealCardsToPlayers(float rotation)
     {
         foreach (Player player in players)
         {
             Card card = texasDeck.DrawRandomCard();
             player.AddCardToHand(card);
 
-            EventManager.DealCardInit(player.playerId, card);
+            EventManager.DealCardInit(player.playerId, card, rotation);
         }
     }
 
@@ -168,7 +188,7 @@ public class TexasGameController : MonoBehaviour
 
         if (player.PlaceBet(bet))
         {
-            if(player.placedBet > largestBet) largestBet = player.placedBet;
+            if (player.placedBet > largestBet) largestBet = player.placedBet;
             playersMoney[player.playerId - 1].text = player.money.ToString() + "$";
             playerBets[player.playerId - 1].text = player.placedBet.ToString() + "$";
             actionPerformed = true;
@@ -230,7 +250,46 @@ public class TexasGameController : MonoBehaviour
             }
         }
 
-        Debug.Log($"Winner is Player {bestPlayer.playerId} with hand value {bestHandValue}!");
+        string pokerHand = "HIGH CARD";
+        if (bestHandValue >= 100)
+        {
+            pokerHand = "ONE PAIR";
+        }
+        if (bestHandValue >= 200)
+        {
+            pokerHand = "TWO PAIR";
+        }
+        if (bestHandValue >= 300)
+        {
+            pokerHand = "THREE OF A KIND";
+        }
+        if (bestHandValue >= 400)
+        {
+            pokerHand = "STRAIGHT";
+        }
+        if (bestHandValue >= 500)
+        {
+            pokerHand = "FLUSH";
+        }
+        if (bestHandValue >= 600)
+        {
+            pokerHand = "FULL HOUSE";
+        }
+        if (bestHandValue >= 700)
+        {
+            pokerHand = "FOUR OF A KIND";
+        }
+        if (bestHandValue >= 800)
+        {
+            pokerHand = "STRAIGHT FLUSH";
+        }
+        if (bestHandValue >= 900)
+        {
+            pokerHand = "ROYAL FLUSH";
+        }
+
+        WinnerTextBackground.sortingOrder = 4;
+        WinnerText.text=$"PLAYER {bestPlayer.playerId-1} WINS WITH {pokerHand}!";
     }
 
     private int EvaluateHand(Player player)
@@ -250,12 +309,16 @@ public class TexasGameController : MonoBehaviour
                 }
                 else
                 {
-                    cardValues.Add(card.GetValue(), 1);    
+                    cardValues.Add(card.GetValue(), 1);
                 }
-                
+
             }
             else
             {
+                if(card.GetValue() == 1)
+                {
+                    cardValues[14]++;
+                }
                 cardValues[card.GetValue()]++;
             }
 
@@ -268,7 +331,7 @@ public class TexasGameController : MonoBehaviour
                 suitValues[card.GetSuit()]++;
             }
         }
-        
+
         cardValues = cardValues.OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
         int points = 0;
@@ -281,13 +344,13 @@ public class TexasGameController : MonoBehaviour
         if ((points = ThreeOfAKind(cardValues)) > 0) return points;
         if ((points = TwoPair(cardValues)) > 0) return points;
         if ((points = Pair(cardValues)) > 0) return points;
-    
+
         points = cardValues.Keys.Max();
         Debug.Log(points);
         return points; // High card or no combination
     }
 
-    private int FourOfAKind(Dictionary<int,int> cardValues)
+    private int FourOfAKind(Dictionary<int, int> cardValues)
     {
         if (cardValues.Values.Contains(4))
         {
@@ -297,8 +360,8 @@ public class TexasGameController : MonoBehaviour
         }
         return 0;
     }
-    
-    private int ThreeOfAKind(Dictionary<int,int> cardValues)
+
+    private int ThreeOfAKind(Dictionary<int, int> cardValues)
     {
         if (cardValues.Values.Contains(3))
         {
@@ -306,47 +369,48 @@ public class TexasGameController : MonoBehaviour
             Debug.Log(points);
             return points.Key * points.Value + 300;
         }
-        return 0 ;    }
-    
-    private int Pair(Dictionary<int,int> cardValues)
+        return 0; }
+
+    private int Pair(Dictionary<int, int> cardValues)
     {
         if (cardValues.Values.Contains(2))
         {
             var points = cardValues.FirstOrDefault(x => x.Value == 2);
             Debug.Log(points);
-            
+
             return points.Key * points.Value + 100;
         }
-        return 0;    }
-    
-    private int TwoPair(Dictionary<int,int> cardValues)
+        return 0; }
+
+    private int TwoPair(Dictionary<int, int> cardValues)
     {
         if (cardValues.Values.Count(value => value == 2) == 2)
         {
             var points = cardValues.Where(x => x.Value == 2).OrderByDescending(x => x.Key).Take(2).ToList();
-            if (points.Count == 2 && points.Any(p => p.Key == 1)) return 0;           
+            if (points.Count == 2 && points.Any(p => p.Key == 1)) return 0;
             Debug.Log(points);
             return points.Sum(x => x.Key * 2) + 200;
         }
         return 0;
     }
-    
-    private int FullHouse(Dictionary<int,int> cardValues)
+
+    private int FullHouse(Dictionary<int, int> cardValues)
     {
         if (cardValues.Values.Contains(3) && cardValues.Values.Contains(2))
         {
+            
             var points = cardValues.FirstOrDefault(x => x.Value == 3);
             var pts = points.Key * points.Value;
-            
+
             points = cardValues.FirstOrDefault(x => x.Value == 2);
             pts += points.Key * points.Value + 600;
-            
+
             return pts;
         }
         return 0;
     }
-    
-    private int Flush(Dictionary<Suits,int> suitValues)
+
+    private int Flush(Dictionary<Suits, int> suitValues)
     {
         return suitValues.Values.Contains(5) ? 500 : 0;
     }
@@ -375,7 +439,7 @@ public class TexasGameController : MonoBehaviour
                 counter = 1; // Reset liczby, jeśli nie są kolejne
             }
         }
-        
+
         return 0;
     }
 
@@ -384,16 +448,16 @@ public class TexasGameController : MonoBehaviour
         var groupedBySuit = cardsOnHand.GroupBy(card => card.GetSuit());
         foreach (var suitGroup in groupedBySuit)
         {
-            
+
             var sortedValues = suitGroup.Select(card => card.GetValue()).Distinct().ToList();
-            
+
             if (sortedValues.Contains(1))
             {
                 sortedValues.Add(14);
             }
 
             sortedValues = sortedValues.OrderByDescending(v => v).ToList();
-            
+
             var points = sortedValues[0];
             int counter = 1;
 
@@ -425,14 +489,14 @@ public class TexasGameController : MonoBehaviour
         foreach (var suitGroup in groupedBySuit)
         {
             var sortedValues = suitGroup.Select(card => card.GetValue()).OrderBy(v => v).ToList();
-            
+
             if (sortedValues.Contains(1))
             {
                 sortedValues.Add(14);
             }
-            
+
             sortedValues = sortedValues.OrderBy(v => v).ToList();
-            
+
             if (new HashSet<int> { 10, 11, 12, 13, 14 }.IsSubsetOf(sortedValues))
             {
                 return 960;
@@ -440,5 +504,25 @@ public class TexasGameController : MonoBehaviour
         }
         return 0;
     }
-    
+
+    public void RaiseBet(){
+        if (players[0].money > betValue)
+        {
+            betValue += 10;
+            BetValue.text = betValue.ToString() + "$";
+        }
+    }
+
+    public void LowerBet(){
+        if (largestBet + 10 < betValue)
+        {
+            betValue -= 10;
+            BetValue.text = betValue.ToString() + "$";
+        }
+    }
+
+    public void PlaceBetButton()
+    {
+        PlaceBet(players[0], betValue, false);
+    }
 }
