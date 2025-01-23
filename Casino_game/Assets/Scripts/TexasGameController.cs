@@ -77,6 +77,9 @@ public class TexasGameController : MonoBehaviour
         DealCardOnTable();
 
         yield return StartCoroutine(PlacingBets());
+        
+        DetermineWinner();
+        
     }
 
     private IEnumerator PlacingBets()
@@ -269,7 +272,7 @@ public class TexasGameController : MonoBehaviour
         cardValues = cardValues.OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
         int points = 0;
-        if ((points = RoyalFlush(cardsOnHand)) > 0) {return points;}
+        if ((points = RoyalFlush(cardsOnHand)) > 0) return points;
         if ((points = StraightFlush(cardsOnHand)) > 0) return points;
         if ((points = FourOfAKind(cardValues)) > 0) return points;
         if ((points = FullHouse(cardValues)) > 0) return points;
@@ -279,15 +282,17 @@ public class TexasGameController : MonoBehaviour
         if ((points = TwoPair(cardValues)) > 0) return points;
         if ((points = Pair(cardValues)) > 0) return points;
     
-        points = cardValues.Values.Max();
+        points = cardValues.Keys.Max();
+        Debug.Log(points);
         return points; // High card or no combination
     }
 
     private int FourOfAKind(Dictionary<int,int> cardValues)
     {
-        if (cardValues.Keys.Contains(4))
+        if (cardValues.Values.Contains(4))
         {
             var points = cardValues.FirstOrDefault(x => x.Value == 4);
+            Debug.Log(points);
             return points.Key * points.Value + 700;
         }
         return 0;
@@ -295,18 +300,21 @@ public class TexasGameController : MonoBehaviour
     
     private int ThreeOfAKind(Dictionary<int,int> cardValues)
     {
-        if (cardValues.Keys.Contains(3))
+        if (cardValues.Values.Contains(3))
         {
             var points = cardValues.FirstOrDefault(x => x.Value == 3);
+            Debug.Log(points);
             return points.Key * points.Value + 300;
         }
         return 0 ;    }
     
     private int Pair(Dictionary<int,int> cardValues)
     {
-        if (cardValues.Keys.Contains(2))
+        if (cardValues.Values.Contains(2))
         {
             var points = cardValues.FirstOrDefault(x => x.Value == 2);
+            Debug.Log(points);
+            
             return points.Key * points.Value + 100;
         }
         return 0;    }
@@ -316,6 +324,8 @@ public class TexasGameController : MonoBehaviour
         if (cardValues.Values.Count(value => value == 2) == 2)
         {
             var points = cardValues.Where(x => x.Value == 2).OrderByDescending(x => x.Key).Take(2).ToList();
+            if (points.Count == 2 && points.Any(p => p.Key == 1)) return 0;           
+            Debug.Log(points);
             return points.Sum(x => x.Key * 2) + 200;
         }
         return 0;
@@ -374,7 +384,16 @@ public class TexasGameController : MonoBehaviour
         var groupedBySuit = cardsOnHand.GroupBy(card => card.GetSuit());
         foreach (var suitGroup in groupedBySuit)
         {
-            var sortedValues = suitGroup.Select(card => card.GetValue()).Distinct().OrderByDescending(v => v).ToList();
+            
+            var sortedValues = suitGroup.Select(card => card.GetValue()).Distinct().ToList();
+            
+            if (sortedValues.Contains(1))
+            {
+                sortedValues.Add(14);
+            }
+
+            sortedValues = sortedValues.OrderByDescending(v => v).ToList();
+            
             var points = sortedValues[0];
             int counter = 1;
 
@@ -406,6 +425,14 @@ public class TexasGameController : MonoBehaviour
         foreach (var suitGroup in groupedBySuit)
         {
             var sortedValues = suitGroup.Select(card => card.GetValue()).OrderBy(v => v).ToList();
+            
+            if (sortedValues.Contains(1))
+            {
+                sortedValues.Add(14);
+            }
+            
+            sortedValues = sortedValues.OrderBy(v => v).ToList();
+            
             if (new HashSet<int> { 10, 11, 12, 13, 14 }.IsSubsetOf(sortedValues))
             {
                 return 960;
