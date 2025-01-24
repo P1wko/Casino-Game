@@ -111,6 +111,9 @@ public class TexasGameController : MonoBehaviour
         {
             Debug.Log("wchodzi");
             if (player.isPassed) continue;
+
+            StartCoroutine(AnimateHand(player.playerId-1, 1));
+
             if (player == players[0])
             {
                 Debug.Log("czekam...");
@@ -122,29 +125,6 @@ public class TexasGameController : MonoBehaviour
             }
             else
             {
-                Vector3 newPosition = playersHands[player.playerId - 1].transform.position;
-                Vector3 offset = new Vector3(0, 0, 0);
-                switch(player.playerId - 1)
-                {
-                    case 1:
-                        offset.x = 1;
-                        break;
-                    case 2:
-                        offset.y = -1;
-                        break;
-                    case 3:
-                        offset.x = -1;
-                        break;
-                    default:
-                        break;
-                }
-                for (int i = 0; i < 30; i++)
-                {
-                    newPosition += offset;
-                    playersHands[player.playerId - 1].transform.position = newPosition;
-                    yield return new WaitForSeconds(0.005f);
-                }
-
                 yield return new WaitForSeconds(2);
 
                 int decision = UnityEngine.Random.Range(0, 10);
@@ -160,16 +140,10 @@ public class TexasGameController : MonoBehaviour
                     Debug.Log($"AI Player {player.playerId - 1} passed.");
                     playerBets[player.playerId - 1].text = "PASS!";
                 }
-
-                offset.x = offset.x * -1;
-                offset.y = offset.y * -1;
-                for (int i = 0; i < 30; i++)
-                {
-                    newPosition += offset;
-                    playersHands[player.playerId - 1].transform.position = newPosition;
-                    yield return new WaitForSeconds(0.005f);
-                }
             }
+
+            StartCoroutine(AnimateHand(player.playerId - 1, -1));
+
         }
 
         for (int i = 0; i < players.Count; i++)
@@ -564,5 +538,34 @@ public class TexasGameController : MonoBehaviour
     public void PlaceBetButton()
     {
         PlaceBet(players[0], betValue, false);
+    }
+
+    private IEnumerator AnimateHand(int id, int way)
+    {
+        Vector3 newPosition = playersHands[id].transform.position;
+        Vector3 offset = new Vector3(0, 0, 0);
+        switch (id)
+        {
+            case 0:
+                offset.y = 1 * way;
+                break;
+            case 1:
+                offset.x = 1 * way;
+                break;
+            case 2:
+                offset.y = -1 * way;
+                break;
+            case 3:
+                offset.x = -1 * way;
+                break;
+            default:
+                break;
+        }
+        for (int i = 0; i < 30; i++)
+        {
+            newPosition += offset;
+            playersHands[id].transform.position = newPosition;
+            yield return new WaitForSeconds(0.005f);
+        }
     }
 }

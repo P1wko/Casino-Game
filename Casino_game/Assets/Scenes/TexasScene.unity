@@ -3748,7 +3748,7 @@ MonoBehaviour:
   - {fileID: 2107767641}
   - {fileID: 1228164147}
   playersHands:
-  - {fileID: 0}
+  - {fileID: 706232390}
   - {fileID: 491363634}
   - {fileID: 1014819547}
   - {fileID: 1705876607}
