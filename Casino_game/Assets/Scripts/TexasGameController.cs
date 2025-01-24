@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class TexasGameController : MonoBehaviour
@@ -46,6 +47,8 @@ public class TexasGameController : MonoBehaviour
         players.Add(new Player(2, "Grzesiek", 500));
         players.Add(new Player(3, "Marcin", 500));
         players.Add(new Player(4, "Mieszko I", 500));
+
+        StartCoroutine(getName());
 
         for(int i = 1; i < players.Count; i++)
         {
@@ -566,6 +569,33 @@ public class TexasGameController : MonoBehaviour
             newPosition += offset;
             playersHands[id].transform.position = newPosition;
             yield return new WaitForSeconds(0.005f);
+        }
+    }
+
+    private IEnumerator getName()
+    {
+        players[0].playerName = "Loading name";
+        using (UnityWebRequest webRequest = UnityWebRequest.Get("http://localhost/szwindel/getUser.php"))
+        {
+            yield return webRequest.SendWebRequest();
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("There was an error getting the high score: " + webRequest.error);
+                players[0].playerName = "not found";
+            }
+            else
+            {
+                Debug.Log(webRequest.downloadHandler.text);
+                if ((!string.IsNullOrEmpty(webRequest.downloadHandler.text) && webRequest.downloadHandler.text[0] == '<') ||
+                    string.IsNullOrEmpty(webRequest.downloadHandler.text))
+                {
+                    players[0].playerName = "not found";
+                }
+                else
+                {
+                    players[0].playerName = webRequest.downloadHandler.text;
+                }
+            }
         }
     }
 }
