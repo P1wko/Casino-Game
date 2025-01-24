@@ -5,7 +5,7 @@ public class Player
 {
     private Hand hand;
     public int playerId { get; private set; }
-    private string playerName;
+    public string playerName;
     public int money { get; private set; }
     public int placedBet { get; set; } = 0;
     public Boolean isPassed = false;

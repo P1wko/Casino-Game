@@ -12,7 +12,9 @@ public class TexasGameController : MonoBehaviour
     public GameObject CardPrefab;
     public GameObject CardsOnTable;
     public List<TextMeshProUGUI> playersMoney;
+    public List<TextMeshProUGUI> playersName;
     public List<TextMeshPro> playerBets;
+    public List<HorizontalLayoutGroup> playersHands;
     public TextMeshPro House;
     public TextMeshPro WinnerText;
     public TextMeshProUGUI BetValue;
@@ -40,10 +42,15 @@ public class TexasGameController : MonoBehaviour
 
     private void Start()
     {
-        players.Add(new Player(1, "Krzysiek", 100));
-        players.Add(new Player(2, "Grzesiek", 200));
-        players.Add(new Player(3, "Marcin", 200));
-        players.Add(new Player(4, "Mieszko I", 200));
+        players.Add(new Player(1, "Krzysiek", 500));
+        players.Add(new Player(2, "Grzesiek", 500));
+        players.Add(new Player(3, "Marcin", 500));
+        players.Add(new Player(4, "Mieszko I", 500));
+
+        for(int i = 1; i < players.Count; i++)
+        {
+            playersName[i].text = players[i].playerName;
+        }
 
         StartCoroutine(GameStages());
 
@@ -115,6 +122,31 @@ public class TexasGameController : MonoBehaviour
             }
             else
             {
+                Vector3 newPosition = playersHands[player.playerId - 1].transform.position;
+                Vector3 offset = new Vector3(0, 0, 0);
+                switch(player.playerId - 1)
+                {
+                    case 1:
+                        offset.x = 1;
+                        break;
+                    case 2:
+                        offset.y = -1;
+                        break;
+                    case 3:
+                        offset.x = -1;
+                        break;
+                    default:
+                        break;
+                }
+                for (int i = 0; i < 30; i++)
+                {
+                    newPosition += offset;
+                    playersHands[player.playerId - 1].transform.position = newPosition;
+                    yield return new WaitForSeconds(0.005f);
+                }
+
+                yield return new WaitForSeconds(2);
+
                 int decision = UnityEngine.Random.Range(0, 10);
                 if (decision > 1) // Call
                 {
@@ -129,7 +161,14 @@ public class TexasGameController : MonoBehaviour
                     playerBets[player.playerId - 1].text = "PASS!";
                 }
 
-                yield return new WaitForSeconds(2);
+                offset.x = offset.x * -1;
+                offset.y = offset.y * -1;
+                for (int i = 0; i < 30; i++)
+                {
+                    newPosition += offset;
+                    playersHands[player.playerId - 1].transform.position = newPosition;
+                    yield return new WaitForSeconds(0.005f);
+                }
             }
         }
 
@@ -210,6 +249,7 @@ public class TexasGameController : MonoBehaviour
         players[0].isPassed = true;
         actionPerformed = true;
         Debug.Log("Przycisk");
+        playerBets[0].text = "PASS!";
     }
 
     public void CheckIfPlayersHaveMoney()
@@ -289,7 +329,7 @@ public class TexasGameController : MonoBehaviour
         }
 
         WinnerTextBackground.sortingOrder = 4;
-        WinnerText.text=$"PLAYER {bestPlayer.playerId-1} WINS WITH {pokerHand}!";
+        WinnerText.text=$"{bestPlayer.playerName.ToUpper()} WINS WITH {pokerHand}!";
     }
 
     private int EvaluateHand(Player player)
