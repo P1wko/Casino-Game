@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
@@ -39,6 +40,8 @@ public class TexasGameController : MonoBehaviour
     private int cardOnTableIndex = 1;
     private int roundsCount = 0;
     private int lastWinnerId = -1;
+    private int playersInGame = 0;
+    private int countTurns = 0;
 
     private void Awake()
     {
@@ -48,10 +51,10 @@ public class TexasGameController : MonoBehaviour
 
     private void Start()
     {
-        players.Add(new Player(1, "Krzysiek", 500));
-        players.Add(new Player(2, "Grzesiek", 500));
-        players.Add(new Player(3, "Marcin", 500));
-        players.Add(new Player(4, "Mieszko I", 500));
+        players.Add(new Player(1, "Krzysiek", 2000));
+        players.Add(new Player(2, "Grzesiek", 2000));
+        players.Add(new Player(3, "Marcin", 2000));
+        players.Add(new Player(4, "Mieszko I", 2000));
 
         StartCoroutine(getHumanPlayersName(1));
 
@@ -81,42 +84,69 @@ public class TexasGameController : MonoBehaviour
             yield return StartCoroutine(DealCardsToPlayers(12.0f));
             yield return StartCoroutine(DealCardsToPlayers(0.0f));
 
-            PlaceBet(players[(roundsCount + 1)%4], smallBlind, false);
-            PlaceBet(players[(roundsCount + 2)%4], smallBlind * 2, false);
-            betValue = largestBet + 10;
-            BetValue.text = betValue.ToString() + "$";
+            PlaceBet(players[(roundsCount + 1) % 4], smallBlind, false);
+            PlaceBet(players[(roundsCount + 2) % 4], smallBlind * 2, false);
+
 
             yield return StartCoroutine(PlacingBets());
+
+            if (playersInGame == 1)
+            {
+                DetermineWinner();
+                yield return new WaitForSeconds(5f);
+                continue;
+            }
+
             largestBet = 0;
-            betValue = largestBet + 10;
-            BetValue.text = betValue.ToString() + "$";
 
             for (int i = 0; i < 3; i++)
             {
                 DealCardOnTable();
                 if (i < 2) yield return new WaitForSeconds(0.3f);
             }
-
+            countTurns++;
             yield return StartCoroutine(PlacingBets());
+
+            if (playersInGame == 1)
+            {
+                DetermineWinner();
+                yield return new WaitForSeconds(5f);
+                continue;
+            }
+
             largestBet = 0;
-            betValue = largestBet + 10;
-            BetValue.text = betValue.ToString() + "$";
 
             DealCardOnTable();
 
+            countTurns++;
             yield return StartCoroutine(PlacingBets());
+
+            if (playersInGame == 1)
+            {
+                DetermineWinner();
+                yield return new WaitForSeconds(5f);
+                continue;
+            }
+
             largestBet = 0;
-            betValue = largestBet + 10;
-            BetValue.text = betValue.ToString() + "$";
 
             DealCardOnTable();
 
+            countTurns++;
             yield return StartCoroutine(PlacingBets());
+
+            if (playersInGame == 1)
+            {
+                DetermineWinner();
+                yield return new WaitForSeconds(5f);
+                continue;
+            }
+
             largestBet = 0;
-            betValue = largestBet + 10;
-            BetValue.text = betValue.ToString() + "$";
 
             DetermineWinner();
+
+            countTurns = 0;
 
             yield return new WaitForSeconds(5f);
         }
@@ -125,7 +155,7 @@ public class TexasGameController : MonoBehaviour
 
     private IEnumerator PlacingBets()
     {
-        int playersInGame = 0;
+        playersInGame = 0;
         foreach (Player player in players) {
             if (!player.isPassed) playersInGame++;
         }
@@ -133,13 +163,17 @@ public class TexasGameController : MonoBehaviour
         {
             for(int i = roundsCount; i < players.Count + roundsCount; i++)
             {
+
+                betValue = largestBet - players[0].placedBet + 10;
+                BetValue.text = betValue.ToString() + "$";
+
                 playersInGame = 0;
 				foreach (Player playerCount in players)
 				{
 					if (!playerCount.isPassed) playersInGame++;
 				}
                 Debug.Log("playersingame: " + playersInGame + ". PlayersCalled: " + playersCalled);
-				Player player = players[(i-1)%4];
+				Player player = players[(i-1) % 4];
                 if (player.isPassed) continue;
                 if (playersCalled == playersInGame) continue;
                 
@@ -164,20 +198,55 @@ public class TexasGameController : MonoBehaviour
                     yield return new WaitForSeconds(2);
 
                     int decision = UnityEngine.Random.Range(0, 10);
-                    if (decision > 1) // Call
+                    if (largestBet == player.placedBet)
                     {
-                        int callAmount = largestBet - player.placedBet;
-                        PlaceBet(player, callAmount, true);
-                        Debug.Log($"AI Player {player.playerId - 1} called with {callAmount}");
-                        StartCoroutine(showEvent(player.playerId - 1, "CALL!"));
-                    }
-                    else // Pass
+                        if (decision >= 0 && decision <= 6) 
+                        {
+                            BotCall(player);
+                        }
+                        else
+                        {
+                            if(largestBet >= player.money)
+                            {
+                                PlaceBet(player, player.money, false);
+                            }
+                            else
+                            {
+                                int bet = GetBiasedRandom(4, (player.money / 10), 10.0);
+
+                                bet *= 10;
+                                PlaceBet(player, bet, false);
+
+                            }
+                        }
+                    } 
+                    else
                     {
-                        player.isPassed = true;
-                        Debug.Log($"AI Player {player.playerId - 1} passed.");
-                        playerBets[player.playerId - 1].text = "PASS!";
-                        StartCoroutine(showEvent(player.playerId - 1, "PASS!"));
+                        if (decision >= 0 && decision < 4) 
+                        {
+                            BotCall(player);
+                        }
+                        else if (decision >= 5 && decision < 8)
+                        {
+                            if(largestBet >= player.money)
+                            {
+                                PlaceBet(player, player.money, false);
+                            }
+                            else
+                            {
+                                int bet = GetBiasedRandom((((largestBet - player.placedBet) / 10) + 1), (player.money / 10), 10.0);
+
+                                bet *= 10;
+                                PlaceBet(player, bet, false);
+                            }
+
+                        }
+                        else  
+                        {
+                            BotPass(player);
+                        }
                     }
+
                 }
 
                 yield return StartCoroutine(AnimateHand(player.playerId - 1, -1));
@@ -196,6 +265,27 @@ public class TexasGameController : MonoBehaviour
 
             House.text = houseMoney.ToString() + "$";
         }
+    }
+
+    private void AllIn(Player player)
+    {
+
+    }
+
+    private void BotPass (Player player)
+    {
+        player.isPassed = true;
+        Debug.Log($"AI Player {player.playerId - 1} passed.");
+        playerBets[player.playerId - 1].text = "PASS!";
+        StartCoroutine(showEvent(player.playerId - 1, "PASS!"));
+    }
+
+    private void BotCall (Player player)
+    {
+        int callAmount = largestBet - player.placedBet;
+        PlaceBet(player, callAmount, true);
+        Debug.Log($"AI Player {player.playerId - 1} called with {callAmount}");
+        StartCoroutine(showEvent(player.playerId - 1, "CALL!"));
     }
 
     public void DealCardOnTable()
@@ -239,8 +329,12 @@ public class TexasGameController : MonoBehaviour
 
     public void PlaceBet(Player player, int bet, bool isCalling)
     {
+        if (bet == 0) isCalling = true;
         if (isCalling) playersCalled++;
-        else playersCalled = 0;
+        else
+        {
+            playersCalled = 0;
+        }
 
         if (player.PlaceBet(bet))
         {
@@ -248,10 +342,14 @@ public class TexasGameController : MonoBehaviour
             playersMoney[player.playerId - 1].text = player.money.ToString() + "$";
             playerBets[player.playerId - 1].text = player.placedBet.ToString() + "$";
             actionPerformed = true;
+            if (!isCalling)
+            {
+                StartCoroutine(showEvent(player.playerId - 1, bet.ToString()));
+            }
         }
         else
         {
-            Debug.Log("Not enough money");
+            PlaceBet(player, 0, isCalling);
         }
     }
 
@@ -286,7 +384,7 @@ public class TexasGameController : MonoBehaviour
         {
             if (player.money < (smallBlind * 2))
             {
-                players.Remove(player);
+                player.isPassed = true;
             }
         }
     }
@@ -310,7 +408,7 @@ public class TexasGameController : MonoBehaviour
         {
             if (player.isPassed) continue;
 
-            player.pointsOnHand = EvaluateHand(player); // Implementuj t� metod�
+            player.pointsOnHand = EvaluateHand(player); 
             if (player.pointsOnHand > bestHandValue)
             {
                 bestHandValue = player.pointsOnHand;
@@ -366,12 +464,8 @@ public class TexasGameController : MonoBehaviour
         lastWinnerId = bestPlayer.playerId - 1;
     }
 
-    private int EvaluateHand(Player player)
+    private void sortHand (List<Card> cardsOnHand, Dictionary<int, int> cardValues, Dictionary<Suits, int> suitValues)
     {
-        List<Card> cardsOnHand = player.GetHand().GetCards();
-        Dictionary<int, int> cardValues = new Dictionary<int, int>();
-        Dictionary<Suits, int> suitValues = new Dictionary<Suits, int>();
-
         foreach (Card card in cardsOnHand)
         {
             if (!cardValues.Keys.Contains(card.GetValue()))
@@ -389,7 +483,7 @@ public class TexasGameController : MonoBehaviour
             }
             else
             {
-                if(card.GetValue() == 1)
+                if (card.GetValue() == 1)
                 {
                     cardValues[14]++;
                 }
@@ -408,6 +502,16 @@ public class TexasGameController : MonoBehaviour
 
         cardValues = cardValues.OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
+    }
+
+    private int EvaluateHand(Player player)
+    {
+        List<Card> cardsOnHand = player.GetHand().GetCards();
+        Dictionary<int, int> cardValues = new Dictionary<int, int>();
+        Dictionary<Suits, int> suitValues = new Dictionary<Suits, int>();
+
+        sortHand(cardsOnHand, cardValues, suitValues);
+
         int points = 0;
         if ((points = RoyalFlush(cardsOnHand)) > 0) return points;
         if ((points = StraightFlush(cardsOnHand)) > 0) return points;
@@ -421,7 +525,7 @@ public class TexasGameController : MonoBehaviour
 
         points = cardValues.Keys.Max();
         Debug.Log(points);
-        return points; // High card or no combination
+        return points;
     }
 
     private int FourOfAKind(Dictionary<int, int> cardValues)
@@ -510,7 +614,7 @@ public class TexasGameController : MonoBehaviour
             else
             {
                 points = sortedValues[i];
-                counter = 1; // Reset liczby, jeśli nie są kolejne
+                counter = 1; 
             }
         }
 
@@ -550,7 +654,7 @@ public class TexasGameController : MonoBehaviour
                 else
                 {
                     points = sortedValues[i];
-                    counter = 1; // Reset liczby, jeśli nie są kolejne
+                    counter = 1; 
                 }
             }
         }
@@ -588,7 +692,7 @@ public class TexasGameController : MonoBehaviour
     }
 
     public void LowerBet(){
-        if (largestBet + 10 < betValue)
+        if (largestBet - players[0].placedBet + 10 < betValue)
         {
             betValue -= 10;
             BetValue.text = betValue.ToString() + "$";
@@ -689,32 +793,6 @@ public class TexasGameController : MonoBehaviour
 
     private void ResetTable()
     {
-	//public GameObject CardPrefab;
-	//public GameObject CardsOnTable;
-	//public List<TextMeshProUGUI> playersMoney;
-	//public List<TextMeshProUGUI> playersName;
-	//public List<TextMeshProUGUI> playersEvents;
-	//public List<TextMeshPro> playerBets;
-	//public List<HorizontalLayoutGroup> playersHands;
-	//public TextMeshPro House;
-	//public TextMeshPro WinnerText;
-	//public TextMeshProUGUI BetValue;
-	//public SpriteRenderer WinnerTextBackground;
-
-	//public float CardSpacing = 0;
-	//public Vector2 CardScale = Vector2.one;
-	//public Vector2 FirstCardPos = Vector2.one;
-	//public int smallBlind = 20;
-
-	//private int betValue = 0;
-	//private int playersCalled = 0;
-	//private int houseMoney = 0;
-	//private TexasDeck texasDeck;
-	//private int CardsOnTableCount = 0;
-	//private List<Player> players = new List<Player>();
-	//private int largestBet = 0;
-	//private bool actionPerformed = false;
-	//private bool yourTurn = false;
 	    CardsOnTableCount = 0;
         House.text = string.Empty;
         WinnerText.text = string.Empty;
@@ -754,5 +832,23 @@ public class TexasGameController : MonoBehaviour
         {
             StartCoroutine(AnimateHand(lastWinnerId,-1));
         }
+    }
+
+    private static System.Random random = new System.Random();
+
+    public static int GetBiasedRandom(int x, int y, double biasFactor = 2.0)
+    {
+        if (x >= y)
+        {
+            throw new ArgumentException("x must be less than y");
+        }
+
+        double u = random.NextDouble();
+
+        double biased = Math.Pow(u, biasFactor);
+
+        double result = x + (y - x) * biased;
+
+        return (int)Math.Floor(result);
     }
 }
