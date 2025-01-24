@@ -116,7 +116,7 @@ public class TexasGameController : MonoBehaviour
             Debug.Log("wchodzi");
             if (player.isPassed) continue;
 
-            StartCoroutine(AnimateHand(player.playerId-1, 1));
+            yield return StartCoroutine(AnimateHand(player.playerId-1, 1));
 
             if (player == players[0])
             {
@@ -146,7 +146,7 @@ public class TexasGameController : MonoBehaviour
                 }
             }
 
-            StartCoroutine(AnimateHand(player.playerId - 1, -1));
+            yield return StartCoroutine(AnimateHand(player.playerId - 1, -1));
 
         }
 
@@ -310,6 +310,7 @@ public class TexasGameController : MonoBehaviour
 
         WinnerTextBackground.sortingOrder = 4;
         WinnerText.text=$"{bestPlayer.playerName.ToUpper()} WINS WITH {pokerHand}!";
+        RevealCards(bestPlayer.playerId - 1);
     }
 
     private int EvaluateHand(Player player)
@@ -602,5 +603,15 @@ public class TexasGameController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void RevealCards(int playerID)
+    {
+        GameObject card1 = GameObject.Find("Player" + (playerID).ToString() + "Card12");
+        Image card1image = card1.GetComponent<Image>();
+        card1image.sprite = players[playerID].GetHand().GetCards()[0].cardImage;
+        GameObject card2 = GameObject.Find("Player" + (playerID).ToString() + "Card0");
+        Image card2image = card2.GetComponent<Image>();
+        card2image.sprite = players[playerID].GetHand().GetCards()[1].cardImage;
     }
 }

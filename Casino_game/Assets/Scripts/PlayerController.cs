@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
                     newImage.sprite = card.cardImage;
                     newImageObject.transform.SetParent(CardsOnHand.transform, false);
                     newImageObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotation);
+                    newImageObject.name = "Player0Card"+rotation.ToString();
                 }
                 break;
             case 2:
@@ -31,9 +32,11 @@ public class PlayerController : MonoBehaviour
 					GameObject newImageObject = Instantiate(CardPrefab);
 					Image newImage = newImageObject.GetComponent<Image>();
 
-					newImage.sprite = Resources.Load<Sprite>("reverse");
+                    //newImage.sprite = card.cardImage;
+                    newImage.sprite = Resources.Load<Sprite>("reverse");
 					newImageObject.transform.SetParent(Comp1Cards.transform, false);
                     newImageObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotation - 90.0f);
+                    newImageObject.name = "Player1Card" + rotation.ToString();
                 }
                 break;
             case 3:
@@ -41,9 +44,11 @@ public class PlayerController : MonoBehaviour
 					GameObject newImageObject = Instantiate(CardPrefab);
 					Image newImage = newImageObject.GetComponent<Image>();
 
+                    //newImage.sprite = card.cardImage;
                     newImage.sprite = Resources.Load<Sprite>("reverse");
                     newImageObject.transform.SetParent(Comp2Cards.transform, false);
                     newImageObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotation - 180.0f);
+                    newImageObject.name = "Player2Card" + rotation.ToString();
                 }
                 break;
             case 4:
@@ -51,9 +56,11 @@ public class PlayerController : MonoBehaviour
 					GameObject newImageObject = Instantiate(CardPrefab);
 					Image newImage = newImageObject.GetComponent<Image>();
 
+                    //newImage.sprite = card.cardImage;
                     newImage.sprite = Resources.Load<Sprite>("reverse");
                     newImageObject.transform.SetParent(Comp3Cards.transform, false);
                     newImageObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotation - 270.0f);
+                    newImageObject.name = "Player3Card" + rotation.ToString();
                 }
                 break;
             default:
