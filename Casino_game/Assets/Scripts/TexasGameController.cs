@@ -14,6 +14,7 @@ public class TexasGameController : MonoBehaviour
     public GameObject CardsOnTable;
     public List<TextMeshProUGUI> playersMoney;
     public List<TextMeshProUGUI> playersName;
+    public List<TextMeshProUGUI> playersEvents;
     public List<TextMeshPro> playerBets;
     public List<HorizontalLayoutGroup> playersHands;
     public TextMeshPro House;
@@ -34,6 +35,7 @@ public class TexasGameController : MonoBehaviour
     private List<Player> players = new List<Player>();
     private int largestBet = 0;
     private bool actionPerformed = false;
+    private bool yourTurn = false;
 
     private void Awake()
     {
@@ -120,12 +122,16 @@ public class TexasGameController : MonoBehaviour
 
             if (player == players[0])
             {
+                yourTurn = true;
+
                 Debug.Log("czekam...");
                 actionPerformed = false;
                 while (!actionPerformed)
                 {
                     yield return null;
                 }
+
+                yourTurn = false;
             }
             else
             {
@@ -137,12 +143,14 @@ public class TexasGameController : MonoBehaviour
                     int callAmount = largestBet - player.placedBet;
                     PlaceBet(player, callAmount, true);
                     Debug.Log($"AI Player {player.playerId - 1} called with {callAmount}");
+                    StartCoroutine(showEvent(player.playerId - 1, "CALL!"));
                 }
                 else // Pass
                 {
                     player.isPassed = true;
                     Debug.Log($"AI Player {player.playerId - 1} passed.");
                     playerBets[player.playerId - 1].text = "PASS!";
+                    StartCoroutine(showEvent(player.playerId - 1, "PASS!"));
                 }
             }
 
@@ -220,16 +228,27 @@ public class TexasGameController : MonoBehaviour
 
     public void Call()
     {
-        PlaceBet(players[0], largestBet - players[0].placedBet, true);
-        Debug.Log("Przycisk");
+        if (yourTurn)
+        {
+            PlaceBet(players[0], largestBet - players[0].placedBet, true);
+            Debug.Log("Przycisk");
+            StartCoroutine(showEvent(0, "CALL!"));
+            yourTurn = false;
+        }
     }
 
     public void Pass()
     {
-        players[0].isPassed = true;
-        actionPerformed = true;
-        Debug.Log("Przycisk");
-        playerBets[0].text = "PASS!";
+        if(yourTurn)
+        {
+            players[0].isPassed = true;
+            actionPerformed = true;
+            Debug.Log("Przycisk");
+            playerBets[0].text = "PASS!";
+            StartCoroutine(showEvent(0, "PASS!"));
+            yourTurn = false;
+        }
+
     }
 
     public void CheckIfPlayersHaveMoney()
@@ -310,6 +329,7 @@ public class TexasGameController : MonoBehaviour
 
         WinnerTextBackground.sortingOrder = 4;
         WinnerText.text=$"{bestPlayer.playerName.ToUpper()} WINS WITH {pokerHand}!";
+        StartCoroutine(AnimateHand(bestPlayer.playerId-1,1));
         RevealCards(bestPlayer.playerId - 1);
     }
 
@@ -544,7 +564,11 @@ public class TexasGameController : MonoBehaviour
 
     public void PlaceBetButton()
     {
-        PlaceBet(players[0], betValue, false);
+        if (yourTurn)
+        {
+            PlaceBet(players[0], betValue, false);
+            yourTurn = false;
+        }
     }
 
     private IEnumerator AnimateHand(int id, int way)
@@ -613,5 +637,20 @@ public class TexasGameController : MonoBehaviour
         GameObject card2 = GameObject.Find("Player" + (playerID).ToString() + "Card0");
         Image card2image = card2.GetComponent<Image>();
         card2image.sprite = players[playerID].GetHand().GetCards()[1].cardImage;
+    }
+
+    private IEnumerator showEvent(int playerID, string text)
+    {
+        playersEvents[playerID].text = text;
+        Color color = playersEvents[playerID].color;
+        color.a = 1.0f;
+        playersEvents[playerID].color = color;
+        yield return new WaitForSeconds(0.5f);
+        for (int i = 0; i < 30; i++)
+        {
+            color.a -= 0.1f;
+            playersEvents[playerID].color = color;
+            yield return new WaitForSeconds(0.05f);
+        }
     }
 }
