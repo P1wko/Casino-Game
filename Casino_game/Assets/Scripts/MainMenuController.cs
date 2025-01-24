@@ -1,5 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
@@ -13,20 +16,32 @@ public class MainMenuController : MonoBehaviour
 	public CanvasGroup[] gamesList;
 	public CanvasGroup OptionsPanel;
 	public CanvasGroup ChoosePokerPanel;
+	public TextMeshProUGUI Score;
 
-	private void Start()
-	{
-		foreach (GameObject canvas in canvasList)
-		{
-			canvasDictionary.Add(canvas.name, canvas);
-			canvas.SetActive(false);
-		}
+    private void Start()
+    {
+		StartCoroutine(getScore(1));
+        foreach (GameObject canvas in canvasList)
+        {
+            canvasDictionary.Add(canvas.name, canvas);
+            canvas.SetActive(false);
+        }
 
-		menuHistoryStack.Push(canvasDictionary["MainMenuCanvas"]);
-		menuHistoryStack.Peek().SetActive(true);
-	}
+        if (!string.IsNullOrEmpty(SceneData.CanvasToShow) && canvasDictionary.ContainsKey(SceneData.CanvasToShow))
+        {
+            menuHistoryStack.Push(canvasDictionary[SceneData.CanvasToShow]);
+        }
+        else
+        {
+            menuHistoryStack.Push(canvasDictionary["MainMenuCanvas"]);
+        }
 
-	public void PushOnStackAndShow(GameObject canvas)
+        menuHistoryStack.Peek().SetActive(true);
+
+        SceneData.CanvasToShow = null;
+    }
+
+    public void PushOnStackAndShow(GameObject canvas)
 	{
 		menuHistoryStack.Peek().SetActive(false);
 		menuHistoryStack.Push(canvas);
@@ -91,6 +106,11 @@ public class MainMenuController : MonoBehaviour
 		PushOnStackAndShow(canvasDictionary["OptionsCanvas"]);
 	}
 
+	public void Settings()
+	{
+        PushOnStackAndShow(canvasDictionary["MainMenuCanvas"]);
+    }
+
 	public void Back()
 	{
 		PopFromStackAndShow();
@@ -100,4 +120,34 @@ public class MainMenuController : MonoBehaviour
 	{
 		Application.Quit();
 	}
+
+    private IEnumerator getScore(int id)
+    {
+        string url = "http://localhost/szwindel/getScore.php?id=" + id.ToString();
+
+        UnityWebRequest www = UnityWebRequest.Get(url);
+
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+
+            string responseText = www.downloadHandler.text;
+            Debug.Log("OdpowiedŸ serwera: " + responseText);
+
+            int score;
+            if (int.TryParse(responseText, out score))
+            {
+				Score.text = score.ToString();
+            }
+            else
+            {
+                Debug.LogError("B³¹d przy próbie parsowania wyniku.");
+            }
+        }
+        else
+        {
+            Debug.LogError("B³¹d po³¹czenia: " + www.error);
+        }
+    }
 }

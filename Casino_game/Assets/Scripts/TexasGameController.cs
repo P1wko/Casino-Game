@@ -766,6 +766,33 @@ public class TexasGameController : MonoBehaviour
         }
     }
 
+
+    public void Back()
+    {
+        int score = players[0].money - 2000;
+        if(score > 0) {
+            StartCoroutine(updateScore(1, score));
+        }
+        
+    }
+    private IEnumerator updateScore(int id, int score)
+    {
+        string url = $"http://localhost/szwindel/setScore.php?id={id}&score={score}";
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Score updated successfully: " + request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.LogError("Failed to update score: " + request.error);
+        }
+    }
+
     private void RevealCards(int playerID)
     {
         GameObject card1 = GameObject.Find("Player" + (playerID).ToString() + "Card12");
