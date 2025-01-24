@@ -3972,6 +3972,7 @@ GameObject:
   - component: {fileID: 1521950842}
   - component: {fileID: 1521950843}
   - component: {fileID: 1521950844}
+  - component: {fileID: 1521950845}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -4051,6 +4052,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3f1f2333710d7064bbf8f0c0522f063c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1521950845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521950841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eac3ec78f43bad46935358f09803f08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1561743257
@@ -5195,7 +5208,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1521950845}
         m_TargetAssemblyTypeName: TexasHudController, Assembly-CSharp
         m_MethodName: Back
         m_Mode: 1

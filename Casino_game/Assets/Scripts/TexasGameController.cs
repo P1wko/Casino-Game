@@ -38,6 +38,7 @@ public class TexasGameController : MonoBehaviour
     private bool yourTurn = false;
     private int cardOnTableIndex = 1;
     private int roundsCount = 0;
+    private int lastWinnerId = -1;
 
     private void Awake()
     {
@@ -67,7 +68,7 @@ public class TexasGameController : MonoBehaviour
         while (true)
         {
             ResetTable();
-            roundsCount = (roundsCount + 1)%4;
+            roundsCount ++;
 			for (int i = 0; i < players.Count; i++)
 			{
 				playersMoney[i].text = players[i].money.ToString() + "$";
@@ -140,6 +141,8 @@ public class TexasGameController : MonoBehaviour
                 Debug.Log("playersingame: " + playersInGame + ". PlayersCalled: " + playersCalled);
 				Player player = players[(i-1)%4];
                 if (player.isPassed) continue;
+                if (playersCalled == playersInGame) continue;
+                
 
                 yield return StartCoroutine(AnimateHand(player.playerId-1, 1));
 
@@ -359,6 +362,8 @@ public class TexasGameController : MonoBehaviour
         RevealCards(bestPlayer.playerId - 1);
 
         players[bestPlayer.playerId - 1].money += houseMoney;
+
+        lastWinnerId = bestPlayer.playerId - 1;
     }
 
     private int EvaluateHand(Player player)
@@ -745,5 +750,9 @@ public class TexasGameController : MonoBehaviour
         }
         texasDeck = new();
         texasDeck.ShuffleDeck();
+        if (lastWinnerId != -1)
+        {
+            StartCoroutine(AnimateHand(lastWinnerId,-1));
+        }
     }
 }
