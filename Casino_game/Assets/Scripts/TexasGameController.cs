@@ -48,7 +48,7 @@ public class TexasGameController : MonoBehaviour
         players.Add(new Player(3, "Marcin", 500));
         players.Add(new Player(4, "Mieszko I", 500));
 
-        StartCoroutine(getName());
+        StartCoroutine(getHumanPlayersName(1));
 
         for(int i = 1; i < players.Count; i++)
         {
@@ -572,10 +572,12 @@ public class TexasGameController : MonoBehaviour
         }
     }
 
-    private IEnumerator getName()
+    private IEnumerator getHumanPlayersName(int id)
     {
+        string url = "http://localhost/szwindel/getUser.php?id=";
+        url += id.ToString();
         players[0].playerName = "Loading name";
-        using (UnityWebRequest webRequest = UnityWebRequest.Get("http://localhost/szwindel/getUser.php"))
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
