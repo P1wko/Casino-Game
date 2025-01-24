@@ -67,8 +67,8 @@ public class TexasGameController : MonoBehaviour
     {
         CheckIfPlayersHaveMoney();
 
-            DealCardsToPlayers(12.0f);
-            DealCardsToPlayers(0.0f);
+        yield return StartCoroutine(DealCardsToPlayers(12.0f));
+        yield return StartCoroutine(DealCardsToPlayers(0.0f));
 
         PlaceBet(players[2], smallBlind, false);
         PlaceBet(players[3], smallBlind * 2, false);
@@ -83,6 +83,7 @@ public class TexasGameController : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             DealCardOnTable();
+            if (i < 2) yield return new WaitForSeconds(0.3f);
         }
 
         yield return StartCoroutine(PlacingBets());
@@ -186,7 +187,7 @@ public class TexasGameController : MonoBehaviour
         }
     }
 
-    public void DealCardsToPlayers(float rotation)
+    public IEnumerator DealCardsToPlayers(float rotation)
     {
         foreach (Player player in players)
         {
@@ -194,6 +195,8 @@ public class TexasGameController : MonoBehaviour
             player.AddCardToHand(card);
 
             EventManager.DealCardInit(player.playerId, card, rotation);
+
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
