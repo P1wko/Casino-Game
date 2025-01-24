@@ -36,6 +36,8 @@ public class TexasGameController : MonoBehaviour
     private int largestBet = 0;
     private bool actionPerformed = false;
     private bool yourTurn = false;
+    private int cardOnTableIndex = 1;
+    private int roundsCount = 0;
 
     private void Awake()
     {
@@ -56,106 +58,128 @@ public class TexasGameController : MonoBehaviour
         {
             playersName[i].text = players[i].playerName;
         }
-
+            
         StartCoroutine(GameStages());
-
-        for (int i = 0; i < players.Count; i++)
-        {
-            playersMoney[i].text = players[i].money.ToString() + "$";
-        }
     }
 
     private IEnumerator GameStages()
     {
-        CheckIfPlayersHaveMoney();
-
-        yield return StartCoroutine(DealCardsToPlayers(12.0f));
-        yield return StartCoroutine(DealCardsToPlayers(0.0f));
-
-        PlaceBet(players[2], smallBlind, false);
-        PlaceBet(players[3], smallBlind * 2, false);
-        betValue = largestBet + 10;
-        BetValue.text = betValue.ToString() + "$";
-
-        yield return StartCoroutine(PlacingBets());
-        largestBet = 0;
-        betValue = largestBet + 10;
-        BetValue.text = betValue.ToString() + "$";
-
-        for (int i = 0; i < 3; i++)
+        while (true)
         {
+            ResetTable();
+            roundsCount = (roundsCount + 1)%4;
+			for (int i = 0; i < players.Count; i++)
+			{
+				playersMoney[i].text = players[i].money.ToString() + "$";
+			}
+
+			yield return new WaitForSeconds(1f);
+
+            CheckIfPlayersHaveMoney();
+
+            yield return StartCoroutine(DealCardsToPlayers(12.0f));
+            yield return StartCoroutine(DealCardsToPlayers(0.0f));
+
+            PlaceBet(players[(roundsCount + 1)%4], smallBlind, false);
+            PlaceBet(players[(roundsCount + 2)%4], smallBlind * 2, false);
+            betValue = largestBet + 10;
+            BetValue.text = betValue.ToString() + "$";
+
+            yield return StartCoroutine(PlacingBets());
+            largestBet = 0;
+            betValue = largestBet + 10;
+            BetValue.text = betValue.ToString() + "$";
+
+            for (int i = 0; i < 3; i++)
+            {
+                DealCardOnTable();
+                if (i < 2) yield return new WaitForSeconds(0.3f);
+            }
+
+            yield return StartCoroutine(PlacingBets());
+            largestBet = 0;
+            betValue = largestBet + 10;
+            BetValue.text = betValue.ToString() + "$";
+
             DealCardOnTable();
-            if (i < 2) yield return new WaitForSeconds(0.3f);
+
+            yield return StartCoroutine(PlacingBets());
+            largestBet = 0;
+            betValue = largestBet + 10;
+            BetValue.text = betValue.ToString() + "$";
+
+            DealCardOnTable();
+
+            yield return StartCoroutine(PlacingBets());
+            largestBet = 0;
+            betValue = largestBet + 10;
+            BetValue.text = betValue.ToString() + "$";
+
+            DetermineWinner();
+
+            yield return new WaitForSeconds(5f);
         }
-
-        yield return StartCoroutine(PlacingBets());
-        largestBet = 0;
-        betValue = largestBet + 10;
-        BetValue.text = betValue.ToString() + "$";
-
-        DealCardOnTable();
-
-        yield return StartCoroutine(PlacingBets());
-        largestBet = 0;
-        betValue = largestBet + 10;
-        BetValue.text = betValue.ToString() + "$";
-
-        DealCardOnTable();
-
-        yield return StartCoroutine(PlacingBets());
-        largestBet = 0;
-        betValue = largestBet + 10;
-        BetValue.text = betValue.ToString() + "$";
-
-        DetermineWinner();
 
     }
 
     private IEnumerator PlacingBets()
     {
-        foreach (Player player in players)
+        int playersInGame = 0;
+        foreach (Player player in players) {
+            if (!player.isPassed) playersInGame++;
+        }
+        while (playersCalled < playersInGame )
         {
-            Debug.Log("wchodzi");
-            if (player.isPassed) continue;
-
-            yield return StartCoroutine(AnimateHand(player.playerId-1, 1));
-
-            if (player == players[0])
+            for(int i = roundsCount; i < players.Count + roundsCount; i++)
             {
-                yourTurn = true;
+                playersInGame = 0;
+				foreach (Player playerCount in players)
+				{
+					if (!playerCount.isPassed) playersInGame++;
+				}
+                Debug.Log("playersingame: " + playersInGame + ". PlayersCalled: " + playersCalled);
+				Player player = players[(i-1)%4];
+                if (player.isPassed) continue;
 
-                Debug.Log("czekam...");
-                actionPerformed = false;
-                while (!actionPerformed)
+                yield return StartCoroutine(AnimateHand(player.playerId-1, 1));
+
+                if (player == players[0])
                 {
-                    yield return null;
+                    yourTurn = true;
+
+                    Debug.Log("czekam...");
+                    actionPerformed = false;
+                    while (!actionPerformed)
+                    {
+                        yield return null;
+                    }
+
+                    yourTurn = false;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(2);
+
+                    int decision = UnityEngine.Random.Range(0, 10);
+                    if (decision > 1) // Call
+                    {
+                        int callAmount = largestBet - player.placedBet;
+                        PlaceBet(player, callAmount, true);
+                        Debug.Log($"AI Player {player.playerId - 1} called with {callAmount}");
+                        StartCoroutine(showEvent(player.playerId - 1, "CALL!"));
+                    }
+                    else // Pass
+                    {
+                        player.isPassed = true;
+                        Debug.Log($"AI Player {player.playerId - 1} passed.");
+                        playerBets[player.playerId - 1].text = "PASS!";
+                        StartCoroutine(showEvent(player.playerId - 1, "PASS!"));
+                    }
                 }
 
-                yourTurn = false;
+                yield return StartCoroutine(AnimateHand(player.playerId - 1, -1));
+
             }
-            else
-            {
-                yield return new WaitForSeconds(2);
-
-                int decision = UnityEngine.Random.Range(0, 10);
-                if (decision > 1) // Call
-                {
-                    int callAmount = largestBet - player.placedBet;
-                    PlaceBet(player, callAmount, true);
-                    Debug.Log($"AI Player {player.playerId - 1} called with {callAmount}");
-                    StartCoroutine(showEvent(player.playerId - 1, "CALL!"));
-                }
-                else // Pass
-                {
-                    player.isPassed = true;
-                    Debug.Log($"AI Player {player.playerId - 1} passed.");
-                    playerBets[player.playerId - 1].text = "PASS!";
-                    StartCoroutine(showEvent(player.playerId - 1, "PASS!"));
-                }
-            }
-
-            yield return StartCoroutine(AnimateHand(player.playerId - 1, -1));
-
         }
 
         for (int i = 0; i < players.Count; i++)
@@ -181,6 +205,8 @@ public class TexasGameController : MonoBehaviour
 
         newSprite.sprite = card.cardImage;
         newSpriteObject.transform.SetParent(CardsOnTable.transform, false);
+        newSpriteObject.name = "CardOnTable" + cardOnTableIndex;
+        cardOnTableIndex++;
 
         newSpriteObject.transform.localPosition =
             new Vector3(FirstCardPos.x + (CardSpacing * CardsOnTableCount), FirstCardPos.y, 0);
@@ -331,6 +357,8 @@ public class TexasGameController : MonoBehaviour
         WinnerText.text=$"{bestPlayer.playerName.ToUpper()} WINS WITH {pokerHand}!";
         StartCoroutine(AnimateHand(bestPlayer.playerId-1,1));
         RevealCards(bestPlayer.playerId - 1);
+
+        players[bestPlayer.playerId - 1].money += houseMoney;
     }
 
     private int EvaluateHand(Player player)
@@ -652,5 +680,70 @@ public class TexasGameController : MonoBehaviour
             playersEvents[playerID].color = color;
             yield return new WaitForSeconds(0.05f);
         }
+    }
+
+    private void ResetTable()
+    {
+	//public GameObject CardPrefab;
+	//public GameObject CardsOnTable;
+	//public List<TextMeshProUGUI> playersMoney;
+	//public List<TextMeshProUGUI> playersName;
+	//public List<TextMeshProUGUI> playersEvents;
+	//public List<TextMeshPro> playerBets;
+	//public List<HorizontalLayoutGroup> playersHands;
+	//public TextMeshPro House;
+	//public TextMeshPro WinnerText;
+	//public TextMeshProUGUI BetValue;
+	//public SpriteRenderer WinnerTextBackground;
+
+	//public float CardSpacing = 0;
+	//public Vector2 CardScale = Vector2.one;
+	//public Vector2 FirstCardPos = Vector2.one;
+	//public int smallBlind = 20;
+
+	//private int betValue = 0;
+	//private int playersCalled = 0;
+	//private int houseMoney = 0;
+	//private TexasDeck texasDeck;
+	//private int CardsOnTableCount = 0;
+	//private List<Player> players = new List<Player>();
+	//private int largestBet = 0;
+	//private bool actionPerformed = false;
+	//private bool yourTurn = false;
+	    CardsOnTableCount = 0;
+        House.text = string.Empty;
+        WinnerText.text = string.Empty;
+        largestBet = 0;
+        WinnerTextBackground.sortingOrder = 0;
+        houseMoney = 0;
+        playersCalled = 0;
+        cardOnTableIndex = 1;
+        yourTurn = false;
+        actionPerformed = false;
+        Destroy(GameObject.Find("Player0Card0"));
+        Destroy(GameObject.Find("Player0Card12"));
+        Destroy(GameObject.Find("Player1Card0"));
+        Destroy(GameObject.Find("Player1Card12"));
+        Destroy(GameObject.Find("Player2Card0"));
+        Destroy(GameObject.Find("Player2Card12"));
+        Destroy(GameObject.Find("Player3Card0"));
+        Destroy(GameObject.Find("Player3Card12"));
+        for (int i = 1;i < 6;i++)
+        {
+			Destroy(GameObject.Find("CardOnTable" + i));
+		}
+        foreach (Player player in players)
+        {
+            player.isPassed = false;
+            player.isActionPerformed = false;
+            player.hand = new();
+        }
+
+        foreach(TextMeshPro playerBet in playerBets)
+        {
+            playerBet.text = string.Empty;
+        }
+        texasDeck = new();
+        texasDeck.ShuffleDeck();
     }
 }

@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class Player
 {
-    private Hand hand;
+    public Hand hand { get; set; }
     public int playerId { get; private set; }
     public string playerName;
-    public int money { get; private set; }
+    public int money { get; set; }
     public int placedBet { get; set; } = 0;
     public Boolean isPassed = false;
     public Boolean isActionPerformed = false;
@@ -43,5 +43,4 @@ public class Player
     {
         return hand;
     }
-
 }
