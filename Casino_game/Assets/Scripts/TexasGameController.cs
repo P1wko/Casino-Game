@@ -197,10 +197,10 @@ public class TexasGameController : MonoBehaviour
                 {
                     yield return new WaitForSeconds(2);
 
-                    int decision = UnityEngine.Random.Range(0, 10);
+                    int decision = UnityEngine.Random.Range(1, 10);
                     if (largestBet == player.placedBet)
                     {
-                        if (decision >= 0 && decision <= 6) 
+                        if (decision > 0 && decision <= 6) 
                         {
                             BotCall(player);
                         }
@@ -212,7 +212,7 @@ public class TexasGameController : MonoBehaviour
                             }
                             else
                             {
-                                int bet = GetBiasedRandom(4, (player.money / 10), 10.0);
+                                int bet = GetBiasedRandom(4, (player.money / 10), 15.0);
 
                                 bet *= 10;
                                 PlaceBet(player, bet, false);
@@ -222,11 +222,11 @@ public class TexasGameController : MonoBehaviour
                     } 
                     else
                     {
-                        if (decision >= 0 && decision < 4) 
+                        if (decision > 0 && decision <= 6) 
                         {
                             BotCall(player);
                         }
-                        else if (decision >= 5 && decision < 8)
+                        else if (decision > 6 && decision <= 9)
                         {
                             if(largestBet >= player.money)
                             {
@@ -234,7 +234,7 @@ public class TexasGameController : MonoBehaviour
                             }
                             else
                             {
-                                int bet = GetBiasedRandom((((largestBet - player.placedBet) / 10) + 1), (player.money / 10), 10.0);
+                                int bet = GetBiasedRandom((((largestBet - player.placedBet) / 10) + 1), (player.money / 10), 15.0);
 
                                 bet *= 10;
                                 PlaceBet(player, bet, false);
